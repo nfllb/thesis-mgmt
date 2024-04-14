@@ -15,6 +15,8 @@ $name = validate($_POST['name']);
 $username = validate($_POST['username']);
 $email = validate($_POST['email']);
 $password = validate($_POST['password']);
+$securityquestion = validate($_POST['securityquestion']);
+$securityanswer = validate($_POST['securityanswer']);
 
 
 if (empty($role))
@@ -51,10 +53,12 @@ if (empty($role))
     exit();
   } else
   {
-    $insertSQL = "INSERT INTO users(Role, Name, UserName, Password, Email) VALUES ('$role', '$name', '$username', '$password', '$email')";
+    $insertSQL = "INSERT INTO users(Role, Name, UserName, Password, Email, SecurityQuestion, SecurityAnswer) VALUES ('$role', '$name', '$username', '$password', '$email', '$securityquestion', '$securityanswer')";
     $result2 = mysqli_query($con, $insertSQL);
     if ($result2)
     {
+      session_unset();
+      session_destroy();
       header("Location: ../login.php");
       exit();
     } else

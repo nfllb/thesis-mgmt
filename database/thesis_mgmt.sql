@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2024 at 02:34 PM
+-- Generation Time: Apr 14, 2024 at 03:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `thesis_mgmt`
 --
-CREATE DATABASE IF NOT EXISTS `thesis_mgmt` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `thesis_mgmt`;
 
 -- --------------------------------------------------------
 
@@ -29,6 +27,7 @@ USE `thesis_mgmt`;
 -- Table structure for table `adviser`
 --
 
+DROP TABLE IF EXISTS `adviser`;
 CREATE TABLE `adviser` (
   `AdviserId` int(11) NOT NULL,
   `FullName` varchar(255) NOT NULL,
@@ -36,6 +35,11 @@ CREATE TABLE `adviser` (
   `CreatedBy` varchar(255) NOT NULL DEFAULT 'AdminUser'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Truncate table before insert `adviser`
+--
+
+TRUNCATE TABLE `adviser`;
 --
 -- Dumping data for table `adviser`
 --
@@ -53,6 +57,7 @@ INSERT INTO `adviser` (`AdviserId`, `FullName`, `CreatedDate`, `CreatedBy`) VALU
 -- Stand-in structure for view `adviser_student_vw`
 -- (See below for the actual view)
 --
+DROP VIEW IF EXISTS `adviser_student_vw`;
 CREATE TABLE `adviser_student_vw` (
 `ThesisId` int(11)
 ,`School` varchar(255)
@@ -68,6 +73,7 @@ CREATE TABLE `adviser_student_vw` (
 -- Table structure for table `files`
 --
 
+DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `fileid` int(11) NOT NULL,
   `DocumentCode` varchar(100) DEFAULT NULL,
@@ -77,6 +83,11 @@ CREATE TABLE `files` (
   `createdby` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Truncate table before insert `files`
+--
+
+TRUNCATE TABLE `files`;
 --
 -- Dumping data for table `files`
 --
@@ -93,6 +104,7 @@ INSERT INTO `files` (`fileid`, `DocumentCode`, `filename`, `filepath`, `createdd
 -- Table structure for table `panelmember`
 --
 
+DROP TABLE IF EXISTS `panelmember`;
 CREATE TABLE `panelmember` (
   `PanelMemberId` int(11) NOT NULL,
   `FullName` varchar(255) NOT NULL,
@@ -100,6 +112,11 @@ CREATE TABLE `panelmember` (
   `CreatedBy` varchar(255) NOT NULL DEFAULT 'AdminUser'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Truncate table before insert `panelmember`
+--
+
+TRUNCATE TABLE `panelmember`;
 --
 -- Dumping data for table `panelmember`
 --
@@ -117,6 +134,7 @@ INSERT INTO `panelmember` (`PanelMemberId`, `FullName`, `CreatedDate`, `CreatedB
 -- Table structure for table `student`
 --
 
+DROP TABLE IF EXISTS `student`;
 CREATE TABLE `student` (
   `StudentId` int(11) NOT NULL,
   `FirstName` varchar(255) NOT NULL,
@@ -129,6 +147,11 @@ CREATE TABLE `student` (
   `CreatedBy` varchar(255) NOT NULL DEFAULT 'AdminUser'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Truncate table before insert `student`
+--
+
+TRUNCATE TABLE `student`;
 --
 -- Dumping data for table `student`
 --
@@ -147,6 +170,7 @@ INSERT INTO `student` (`StudentId`, `FirstName`, `MiddleName`, `LastName`, `Cour
 -- Table structure for table `thesis`
 --
 
+DROP TABLE IF EXISTS `thesis`;
 CREATE TABLE `thesis` (
   `ThesisId` int(11) NOT NULL,
   `Title` varchar(1000) NOT NULL,
@@ -157,6 +181,11 @@ CREATE TABLE `thesis` (
   `DateOfFinalDefense` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Truncate table before insert `thesis`
+--
+
+TRUNCATE TABLE `thesis`;
 --
 -- Dumping data for table `thesis`
 --
@@ -171,12 +200,18 @@ INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `Instructor`, `School`, 
 -- Table structure for table `thesispanelmembermap`
 --
 
+DROP TABLE IF EXISTS `thesispanelmembermap`;
 CREATE TABLE `thesispanelmembermap` (
   `ThesisPanelMemberMap` int(11) NOT NULL,
   `ThesisId` int(11) DEFAULT NULL,
   `PanelMemberId` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Truncate table before insert `thesispanelmembermap`
+--
+
+TRUNCATE TABLE `thesispanelmembermap`;
 --
 -- Dumping data for table `thesispanelmembermap`
 --
@@ -191,12 +226,18 @@ INSERT INTO `thesispanelmembermap` (`ThesisPanelMemberMap`, `ThesisId`, `PanelMe
 -- Table structure for table `thesisstudentmap`
 --
 
+DROP TABLE IF EXISTS `thesisstudentmap`;
 CREATE TABLE `thesisstudentmap` (
   `ThesisStudentMapId` int(11) NOT NULL,
   `ThesisId` int(11) DEFAULT NULL,
   `StudentId` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Truncate table before insert `thesisstudentmap`
+--
+
+TRUNCATE TABLE `thesisstudentmap`;
 --
 -- Dumping data for table `thesisstudentmap`
 --
@@ -215,6 +256,7 @@ INSERT INTO `thesisstudentmap` (`ThesisStudentMapId`, `ThesisId`, `StudentId`) V
 -- Stand-in structure for view `thesis_student_adviser_vw`
 -- (See below for the actual view)
 --
+DROP VIEW IF EXISTS `thesis_student_adviser_vw`;
 CREATE TABLE `thesis_student_adviser_vw` (
 `Title` varchar(1000)
 ,`StudentName` text
@@ -226,10 +268,46 @@ CREATE TABLE `thesis_student_adviser_vw` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `UserId` int(11) NOT NULL,
+  `Role` enum('Admin','Adviser','Dean','Instructor','Student','ResearchCoordinator') NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `UserName` varchar(255) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `SecurityQuestion` varchar(255) NOT NULL,
+  `SecurityAnswer` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Truncate table before insert `users`
+--
+
+TRUNCATE TABLE `users`;
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`UserId`, `Role`, `Name`, `UserName`, `Password`, `Email`, `SecurityQuestion`, `SecurityAnswer`) VALUES
+(1, 'Admin', 'Nel Buen', 'nelbuen', 'c4ca4238a0b923820dcc509a6f75849b', 'nelbuen@test.com', 'What elementary school did you attend?', 'hilo'),
+(2, 'Student', 'Test 1', 'test1', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What is your mother\'s maiden name?', 'mader'),
+(3, 'ResearchCoordinator', 'RC', 'rc', 'c4ca4238a0b923820dcc509a6f75849b', 'rc@testing.com', 'What elementary school did you attend?', 'tes'),
+(4, 'Dean', 'Dean', 'deanto', 'c4ca4238a0b923820dcc509a6f75849b', 'dean@testing.com', 'What elementary school did you attend?', 'mes'),
+(5, 'Adviser', 'Test Adviser', 'test.adviser', '81dc9bdb52d04dc20036dbd8313ed055', 'test.adviser@testing.com', 'What elementary school did you attend?', 'mes'),
+(6, 'Instructor', 'Test Instructor', 'test.instructor', '202cb962ac59075b964b07152d234b70', 'test.instructor@testing.com', 'What elementary school did you attend?', 'mes');
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `adviser_student_vw`
 --
 DROP TABLE IF EXISTS `adviser_student_vw`;
 
+DROP VIEW IF EXISTS `adviser_student_vw`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `adviser_student_vw`  AS SELECT `t`.`ThesisId` AS `ThesisId`, `t`.`School` AS `School`, `t`.`SchoolYear` AS `SchoolYear`, `a`.`FullName` AS `Adviser`, concat(`s`.`FirstName`,' ',`s`.`MiddleName`,' ',`s`.`LastName`) AS `StudentName`, `t`.`DateOfFinalDefense` AS `DateOfFinalDefense` FROM (((`thesis` `t` left join `adviser` `a` on(`t`.`AdviserId` = `a`.`AdviserId`)) left join `thesisstudentmap` `tsm` on(`t`.`ThesisId` = `tsm`.`ThesisId`)) left join `student` `s` on(`tsm`.`StudentId` = `s`.`StudentId`)) ;
 
 -- --------------------------------------------------------
@@ -239,6 +317,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `thesis_student_adviser_vw`;
 
+DROP VIEW IF EXISTS `thesis_student_adviser_vw`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `thesis_student_adviser_vw`  AS SELECT `t`.`Title` AS `Title`, concat(`s`.`FirstName`,' ',`s`.`MiddleName`,' ',`s`.`LastName`) AS `StudentName`, `s`.`Course` AS `Course`, `a`.`FullName` AS `Adviser`, `t`.`DateOfFinalDefense` AS `DateOfFinalDefense` FROM (((`thesis` `t` left join `thesisstudentmap` `tsm` on(`t`.`ThesisId` = `tsm`.`ThesisId`)) left join `student` `s` on(`tsm`.`StudentId` = `s`.`StudentId`)) left join `adviser` `a` on(`t`.`AdviserId` = `a`.`AdviserId`)) ;
 
 --
@@ -293,6 +372,12 @@ ALTER TABLE `thesisstudentmap`
   ADD KEY `ThesisId_` (`ThesisId`);
 
 --
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`UserId`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -337,6 +422,12 @@ ALTER TABLE `thesispanelmembermap`
 --
 ALTER TABLE `thesisstudentmap`
   MODIFY `ThesisStudentMapId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `UserId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
