@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+body {
+	font-family: Arial, Helvetica Neue, Helvetica,
+		sans-serif;
+	font-size: 13px;
+	background-color: #ecdfd7;
+}
+
+.form-label {
+	margin-bottom: 1px;
+}
+
+.form-control,
+.form-select {
+	font-size: 13px;
+	border-radius: 0.75rem;
+}
+
+.btn-primary {
+	background-color: #d2691e;
+	border-color: #d2691e;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+	background-color: #e58b4b;
+	border-color: #e58b4b;
+	box-shadow: #e58b4b;
+}
+
+.ca {
+	font-size: 11px;
+	padding: 10px;
+	text-decoration: none;
+	color: #444;
+	float: right;
+}
+
+.shadow {
+	box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.login-form {
+	width: 350px;
+}
+
+.forgot-password {
+	color: #d2691e;
+	font-size: 12px;
+}
+
+.signup-link {
+	color: #d2691e;
+}
+
+.fa-triangle-exclamation {
+	font-size: 16px;
+}
