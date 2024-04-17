@@ -58,3 +58,30 @@ body {
 	font-size: 16px;
 	padding-right: 4px;
 }
+
+.thesis-text-color {
+	color: #d2691e;
+}
+
+h6.thesis-text-color .badge {
+	background-color: #e4d1c6;
+	color: #d2691e;
+	margin-right: 5px;
+}
+
+#thesisContainer {
+	border-radius: 15px !important;
+	background-color: #f4ede8;
+}
+
+.black_text_hover_pointer:hover {
+	color: gray;
+	cursor: pointer;
+}
+
+div#thesisContainer.card.w-75.mb-3
+	div.card-body
+	a#thesisName {
+	text-decoration: none;
+	color: black;
+}
