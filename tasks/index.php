@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'dbconnect.php';
+include './../dbconnect.php';
 if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 {
 
@@ -18,7 +18,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet" href="./../css/styles.css">
     </head>
 
     <body>
@@ -27,7 +27,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             <span>Name: <?php echo $_SESSION['name']; ?></span><br>
             <span>UserName: <?php echo $_SESSION['username']; ?></span><br>
             <span>Role: <?php echo $_SESSION['role']; ?></span><br>
-            <a href="logout.php" class="btn btn-dark btn-sm">Logout</a>
+            <a href="./../logout.php" class="btn btn-dark btn-sm">Logout</a>
         </div>
         <hr>
 
@@ -68,7 +68,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     echo "<span class='badge text-bg-secondary'>$author</span>";
                 }
                 echo "</h6>
-                            <a href='./php/download-thesis.php' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>
+                            <a href='./../php/download-thesis.php' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>
                             <br><span class='thesis-text-color'>Last Updated Date: March 10, 2024 </span>
                         </div>
                     </div>

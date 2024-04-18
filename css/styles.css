@@ -85,3 +85,19 @@ div#thesisContainer.card.w-75.mb-3
 	text-decoration: none;
 	color: black;
 }
+
+.w-35 {
+	width: 35% !important;
+}
+
+.center-middle-text {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+.table-success,
+.table-warning,
+.table-secondary,
+.blk-border {
+	border-color: rgb(15, 15, 15) !important;
+}

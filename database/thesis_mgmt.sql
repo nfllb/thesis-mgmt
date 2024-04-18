@@ -294,7 +294,7 @@ TRUNCATE TABLE `users`;
 
 INSERT INTO `users` (`UserId`, `Role`, `Name`, `UserName`, `Password`, `Email`, `SecurityQuestion`, `SecurityAnswer`) VALUES
 (1, 'Admin', 'Nel Buen', 'nelbuen', 'c4ca4238a0b923820dcc509a6f75849b', 'nelbuen@test.com', 'What elementary school did you attend?', 'hilo'),
-(2, 'Student', 'Test 1', 'test1', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What is your mother\'s maiden name?', 'mader'),
+(2, 'Student', 'Test 1', 'test1', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What is your mother\''s maiden name?', 'mader'),
 (3, 'ResearchCoordinator', 'RC', 'rc', 'c4ca4238a0b923820dcc509a6f75849b', 'rc@testing.com', 'What elementary school did you attend?', 'tes'),
 (4, 'Dean', 'Dean', 'deanto', 'c4ca4238a0b923820dcc509a6f75849b', 'dean@testing.com', 'What elementary school did you attend?', 'mes'),
 (5, 'Adviser', 'Test Adviser', 'test.adviser', '81dc9bdb52d04dc20036dbd8313ed055', 'test.adviser@testing.com', 'What elementary school did you attend?', 'mes'),
@@ -457,3 +457,43 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+CREATE OR REPLACE VIEW `thesis_groupedstudents_vw` AS
+select `t`.`ThesisId`,
+`t`.`Title` AS `Title`,
+group_concat(distinct concat(`s`.`FirstName`,' ',`s`.`LastName`) separator ',') AS `Authors`, 
+a.FullName AS Adviser,
+t.Instructor
+from `thesis_mgmt`.`thesis` `t` 
+       left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+       on`tsm`.`ThesisId` = `t`.`ThesisId`
+      left join `thesis_mgmt`.`student` `s` 
+      on`tsm`.`StudentId` = `s`.`StudentId`
+      left join adviser a
+      on t.AdviserId = a.AdviserId
+      group by `t`.`Title`, a.FullName, t.Instructor
+
+INSERT INTO thesis_checklist_map
+SELECT NULL, 2, CheckListId, '0', 'Draft'
+FROM checklist
+
+
+CREATE OR REPLACE VIEW `thesis_checklist_vw` AS
+SELECT t.ThesisId,
+tcm.Completed,
+tcm.Status,
+t.Title,
+tgs.Authors,
+tgs.Adviser,
+tgs.Instructor,
+c.StepNumber,
+c.TaskName,
+c.Assignee,
+c.Action
+FROM thesis t
+LEFT JOIN thesis_checklist_map tcm
+ON t.ThesisId = tcm.ThesisId
+LEFT JOIN checklist c
+ON c.CheckListId = tcm.CheckListId
+LEFT JOIN thesis_groupedstudents_vw tgs
+ON t.ThesisId = tgs.ThesisId;
