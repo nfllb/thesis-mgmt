@@ -1,11 +1,13 @@
 <?php
-echo $_GET['thesisId'];
-
 session_start();
 include './../dbconnect.php';
 
 if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 {
+    $thesisId = $_GET['thesisId'];
+
+    //$thesisId = 1;
+    echo $thesisId;
     function get_enum_values($con, $table, $field)
     {
 
@@ -36,13 +38,13 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="./../css/styles.css">
     </head>
 
-    <body>
+    <body class="task-details">
         <div>
             <h3>Task Details</h3>
             <span>Name: <?php echo $_SESSION['name']; ?></span><br>
             <span>UserName: <?php echo $_SESSION['username']; ?></span><br>
             <span>Role: <?php echo $_SESSION['role']; ?></span><br>
-            <a href="logout.php" class="btn btn-dark btn-sm">Logout</a>
+            <a href="./../logout.php" class="btn btn-dark btn-sm">Logout</a>
         </div>
         <hr>
 
@@ -59,11 +61,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body" style='width:90%;'>
                         <?php
-                        $sql_Query = "SELECT * FROM thesis_checklist_vw WHERE ThesisId = " . $_GET["thesisId"] . " ORDER BY StepNumber ASC";
+                        $sql_Query = "SELECT * FROM thesis_checklist_vw WHERE ThesisId = " . $thesisId . " ORDER BY StepNumber ASC";
                         $result = mysqli_query($con, $sql_Query);
                         if ($result && mysqli_num_rows($result) > 0)
                         {
-                            echo "<table class='table table-bordered table-sm blk-border'>
+                            echo "<table id='checklistTable' class='table table-bordered table-sm blk-border'>
                                     <thead class='center-middle-text'>
                                         <tr>" .
                                 // <th style='width: 3%; 'scope='col'></th>
@@ -91,7 +93,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                 $show_action = true;
                                 if (($step["Action"] == 'Approval' || $step["Action"] == 'Upload') && $step_status != 'Completed' && $index > 0 && $prev_step != null && $prev_step["Status"] != 'Completed')
                                 {
-                                    $bkgrnd_color = 'table-warning';
+                                    $bkgrnd_color = 'table-secondary';
                                 } else if ($step_status == 'Completed')
                                 {
                                     $bkgrnd_color = 'table-success';
@@ -128,7 +130,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                         <td style='width: 10%;'>";
                                 if ($step["Action"] == 'Manual')
                                 {
-                                    echo "<select class='form-select mb-2 shadow' id=status " . $disabled . ">";
+                                    echo "<select class='form-select mb-2 shadow' id=statusValue" . $step_number . " " . $disabled . ">";
                                     foreach ($status_enum_values_arr as $status)
                                     {
                                         $selected = '';
@@ -149,10 +151,29 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                      </td>";
                                 } else if ($show_action && $step["Action"] == 'Manual')
                                 {
-                                    echo "<td><button type='button' class='btn btn-success btn-sm'>Save</button></td>";
+                                    echo "<td><button type='button' value=" . $step_number . " class='btn btn-success btn-sm saveStepBtn'>Save</button></td>";
                                 } else if ($show_action && $step["Action"] == 'Upload')
                                 {
-                                    echo "<td><button type='button' class='btn btn-success btn-sm'>Upload</button></td>";
+                                    // <div class='statusMsg'></div>
+                                    //             <input type='file' class='form-control' id='file' name='file' required />
+                                    //             <button type='button'  value=" . $step_number . " class='btn btn-success uploadFileBtn'>Upload</button>
+                                    // <input type='submit' name='submit' class='btn btn-success' value='Upload'/>
+                    
+
+                                    // <form id=fupForm' enctype='multipart/form-data'>
+                                    //             <div class='statusMsg'></div>
+                                    //             <input type='file' class='form-control' id='file' name='file' required />
+                                    //             <button type='submit' name='submit' class='btn btn-primary'>Upload</button>
+                                    //         </form>
+                                    echo "<td>
+                                                <form>
+                                                    <input type='file' id='file' />
+                                                    <br />
+                                                    <center><button type='button' value=" . $step_number . " class='btn btn-success' id='upload'>Upload</button></center>
+                                                    <br />
+                                                    <div id='msg'></div>
+                                                </form>
+                                        </td>";
                                 } else
                                 {
                                     echo "<td></td>";
@@ -205,9 +226,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             </div>
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
             crossorigin="anonymous"></script>
@@ -215,12 +234,127 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
-        <script type="text/javascript">
-            // If you do not want to use jQuery you can use Pure JavaScript. See FAQ below
-            $(document).ready(function () {
-                $('[data-toggle="tooltip"]').tooltip();
+
+        <script>
+            $(document).on('click', '.saveStepBtn', function (e) {
+                e.preventDefault();
+
+                var step_number = $(this).val();
+                var new_step_status = document.getElementById('statusValue' + step_number).value;
+                console.log(step_number + ' - ' + new_step_status);
+
+                $.ajax({
+                    type: "POST",
+                    url: "save_task.php",
+                    data: {
+                        'update_step': true,
+                        'thesis_Id': <?php echo $thesisId; ?>,
+                        'step_number': step_number,
+                        'action': 'Manual',
+                        'new_step_status': new_step_status
+                    },
+                    success: function (response) {
+
+                        //var res = jQuery.parseJSON(response);
+                        console.log(response);
+                        new_step_status = '';
+                        $('#checklistTable').load(location.href + " #checklistTable");
+
+                    }
+                });
+
+            });
+
+        </script>
+
+        <script>
+            // $(document).on('submit', '#fupForm', function (e) {
+            //     e.preventDefault();
+
+            //     var formData = new FormData(this);
+            //     formData.append("upload_file_step", true);
+
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: 'save_task.php',
+            //         data: formData,
+            //         contentType: false,
+            //         processData: false,
+            //         beforeSend: function () {
+            //             $('.submitBtn').attr("disabled", "disabled");
+            //             $('#fupForm').css("opacity", ".5");
+            //         },
+            //         success: function (response) {
+            //             console.log(response);
+            //             $('.statusMsg').html('');
+            //             if (response.status == 1) {
+            //                 $('#fupForm')[0].reset();
+            //                 $('.statusMsg').html('<p class="alert alert-success">' + response.message + '</p>');
+            //             } else {
+            //                 $('.statusMsg').html('<p class="alert alert-danger">' + response.message + '</p>');
+            //             }
+            //             $('#fupForm').css("opacity", "");
+            //             $(".submitBtn").removeAttr("disabled");
+            //         }
+            //     });
+            // });
+
+            $(document).on('click', '#upload', function (e) {
+                e.preventDefault();
+                var step_number = $(this).val();
+
+                $(this).attr('disabled', 'disabled');
+                var file = $('#file');
+                var file_length = file[0].files.length;
+                var file_data = file.prop('files')[0];
+
+                var formData = new FormData();
+                formData.append('file', file_data);
+                formData.append('thesis_Id', <?php echo $thesisId; ?>);
+                formData.append('upload_file_step', true);
+                formData.append('step_number', step_number);
+                formData.append('action', 'Upload');
+                formData.append('new_step_status', 'Completed');
+
+                $.ajax({
+                    type: "POST",
+                    url: "save_task.php",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "success") {
+                            $("#msg").empty();
+                            $("<center class='text-success'>Successfully uploaded!</center>").appendTo($("#msg"));
+                            $('#file').val('');
+                        } else {
+                            $("#msg").empty();
+                            $("<center class='text-danger'>" + data + "</center>").appendTo($("#msg"));
+                            $('#file').val('');
+                        }
+
+                        $('#upload').removeAttr('disabled');
+
+                    }
+                });
+
+            });
+
+            // File type validation
+            $("#file").change(function () {
+                var file = this.files[0];
+                var fileType = file.type;
+                var match = ['application/pdf', 'application/msword', 'application/vnd.ms-office', 'image/jpeg', 'image/png', 'image/jpg'];
+                if (!((fileType == match[0]) || (fileType == match[1]) || (fileType == match[2]) || (fileType == match[3]) || (fileType == match[4]) || (fileType == match[5]))) {
+                    alert('Sorry, only PDF, DOC, JPG, JPEG, & PNG files are allowed to upload.');
+                    $("#file").val('');
+                    return false;
+                }
             });
         </script>
+
     </body>
 
     </html> <?php } else

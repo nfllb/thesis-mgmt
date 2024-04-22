@@ -101,3 +101,9 @@ div#thesisContainer.card.w-75.mb-3
 .blk-border {
 	border-color: rgb(15, 15, 15) !important;
 }
+
+.task-details
+	#checklistTable
+	.form-select:disabled {
+	color: green !important;
+}

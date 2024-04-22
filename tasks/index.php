@@ -47,7 +47,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             $sql_WhereClause = $sql_WhereClause . 'Authors LIKE \'%' . $_SESSION['name'] . '%\'';
         }
 
-        $sql_Select = "SELECT * FROM thesis_groupedstudents_vw" . $sql_WhereClause;
+        $sql_Select = "SELECT * FROM thesis_groupedstudents_vw" . $sql_WhereClause . ' ORDER BY ThesisId';
         $result = mysqli_query($con, $sql_Select);
 
         if ($result && mysqli_num_rows($result) > 0)
