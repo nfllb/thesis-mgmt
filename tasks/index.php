@@ -33,7 +33,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
         <?php
         $sql_WhereClause = ' WHERE ';
-        if ($_SESSION['role'] == 'ResearchCoordinator')
+        if ($_SESSION['role'] == 'Research Coordinator')
         {
             $sql_WhereClause = $sql_WhereClause . '1';
         } else if ($_SESSION['role'] == 'Adviser')
@@ -110,5 +110,5 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     </html>
 <?php } else
 {
-    header("Location: login.php");
+    header("Location: ./../login.php");
 } ?>

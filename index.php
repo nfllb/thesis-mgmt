@@ -10,7 +10,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
             integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet" href="././css/styles.css">
 
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -82,6 +82,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                             <span class="item">Reports</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="./tasks/index.php">
+                            <span class="icon"><i class="fas fa-user-shield"></i></span>
+                            <span class="item">Tasks</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -107,5 +113,5 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     </html>
 <?php } else
 {
-    header("Location: login.php");
+    header("Location: ./login.php");
 } ?>
