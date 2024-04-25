@@ -6,14 +6,37 @@ include './../dbconnect.php';
 if (isset($_POST['update_step']))
 {
     $thesisId = $_POST['thesis_Id'];
-    $stepId = $_POST['step_number'];
+    $checklistId = $_POST['checklist_Id'];
     $new_step_status = $_POST['new_step_status'];
     $action = $_POST['action'];
 
     if ($action == 'Manual')
     {
-        $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $stepId;
+        $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklistId;
         $query_run = mysqli_query($con, $update_query);
+        return;
+    }
+
+}
+
+if (isset($_POST['save_editor']))
+{
+    $thesisId = $_POST['thesis_Id'];
+    $checklistId = $_POST['checklist_Id'];
+    $new_step_status = $_POST['new_step_status'];
+    $action = $_POST['action'];
+    $editorId = $_POST['editor'];
+
+    if ($action == 'Manual')
+    {
+        $insert_query = "INSERT INTO `thesis_checklist_editor_map` (`ThesisChecklistEditorId`, `ThesisId`, `CheckListId`, `EditorId`) VALUES (NULL,?,?,?)";
+        $stmt = $con->prepare($insert_query);
+        $stmt->bind_param("iii", $thesisId, $checklistId, $editorId);
+        $insert = $stmt->execute();
+
+        $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklistId;
+        $query_run = mysqli_query($con, $update_query);
+        
         return;
     }
 
@@ -22,7 +45,7 @@ if (isset($_POST['update_step']))
 if (isset($_POST['upload_file_step']))
 {
     $thesisId = $_POST['thesis_Id'];
-    $stepId = $_POST['step_number'];
+    $checklist_id = $_POST['checklist_id'];
     $new_step_status = $_POST['new_step_status'];
     $action = $_POST['action'];
     $step_file_name = $_POST['step_file_name'];
@@ -55,12 +78,12 @@ if (isset($_POST['upload_file_step']))
                     // Insert form data in the database 
                     $sqlQ = "INSERT INTO thesis_checklist_file_map (`ThesisChecklistFileId`, `ThesisId`, `CheckListId`, `FileName`, `FilePath`, `UploadedBy`, `UploadedDate`) VALUES (NULL,?,?,?,?,?,NOW());";
                     $stmt = $con->prepare($sqlQ);
-                    $stmt->bind_param("iisss", $thesisId, $stepId, $stepFileName, $targetFilePath, $_SESSION['name']);
+                    $stmt->bind_param("iisss", $thesisId, $checklist_id, $stepFileName, $targetFilePath, $_SESSION['name']);
                     $insert = $stmt->execute();
 
                     if ($insert)
                     {
-                        $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $stepId;
+                        $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
                         $query_run = mysqli_query($con, $update_query);
                         echo 'success';
                     }
@@ -82,23 +105,23 @@ if (isset($_POST['upload_file_step']))
 if (isset($_POST['approve_step']))
 {
     $thesisId = $_POST['thesis_Id'];
-    $stepId = $_POST['step_number'];
+    $checklist_id = $_POST['checklist_id'];
     $new_step_status = $_POST['new_step_status'];
     $action = $_POST['action'];
 
     if ($action == 'Approval')
     {
-        $update_approval_map = "UPDATE thesis_checklist_approval_map SET Approved = 1 WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $stepId . " AND ApproverId = " . $_SESSION['userid'];
+        $update_approval_map = "UPDATE thesis_checklist_approval_map SET Approved = 1 WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id . " AND ApproverId = " . $_SESSION['userid'];
         $update_approval_map_result = mysqli_query($con, $update_approval_map);
 
-        $select_unapproved = "SELECT ThesisChecklistApprovalId FROM thesis_checklist_approval_map WHERE Approved = 0 AND ThesisId = " . $thesisId . " AND CheckListId = " . $stepId;
+        $select_unapproved = "SELECT ThesisChecklistApprovalId FROM thesis_checklist_approval_map WHERE Approved = 0 AND ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
         $select_unapproved_result = mysqli_query($con, $select_unapproved);
         if ($select_unapproved_result && mysqli_num_rows($select_unapproved_result) > 0)
         {
-            $update_query = "UPDATE thesis_checklist_map SET Status = 'In Progress' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $stepId;
+            $update_query = "UPDATE thesis_checklist_map SET Status = 'In Progress' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
         } else
         {
-            $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $stepId;
+            $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
         }
 
         $update_query_result = mysqli_query($con, $update_query);
@@ -118,17 +141,17 @@ if (isset($_POST['approve_step']))
 if (isset($_POST['reject_step']))
 {
     $thesisId = $_POST['thesis_Id'];
-    $stepId = $_POST['step_number'];
+    $checklist_id = $_POST['checklist_id'];
     $new_step_status = $_POST['new_step_status'];
     $action = $_POST['action'];
 
     if ($action == 'Approval')
     {
-        $update_approval_map = "UPDATE thesis_checklist_approval_map SET Approved = 0 WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $stepId;
+        $update_approval_map = "UPDATE thesis_checklist_approval_map SET Approved = 0 WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
         $update_approval_map_result = mysqli_query($con, $update_approval_map);
 
-        $stepId = $stepId - 1;
-        $update_query = "UPDATE thesis_checklist_map SET Status = 'In Progress' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $stepId;
+        $checklist_id = $checklist_id - 1;
+        $update_query = "UPDATE thesis_checklist_map SET Status = 'In Progress' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
         $update_query_result = mysqli_query($con, $update_query);
         if ($update_query_result)
         {

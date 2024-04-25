@@ -78,6 +78,14 @@ h6.thesis-text-color .badge {
 	background-color: #f4ede8;
 }
 
+.accordion-button {
+	background-color: #f4ede8 !important;
+	color: #d2691e !important;
+}
+
+thead {
+	background-color: #f4ede8 !important;
+}
 .black_text_hover_pointer:hover {
 	color: gray;
 	cursor: pointer;
@@ -138,6 +146,10 @@ div#thesisContainer.card.w-75.mb-3
 
 .vertical-center {
 	margin-top: 5px !important;
+}
+
+.dselect-wrapper .dropdown-menu {
+	font-size: 11px !important;
 }
 
 * {
