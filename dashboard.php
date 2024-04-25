@@ -15,33 +15,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Thesis Management</title>
+        <title>Dashboard</title>
     </head>
 
     <body>
         <?php include ('./header.php'); ?>
         <?php include ('./sidebar.php'); ?>
+        <hr>
 
-        <?php
-        if ($_SESSION['role'] != 'Student')
-        {
-            header("Location: ./dashboard.php");
-        } else
-        {
-            $sql_Select = "SELECT * FROM thesis_groupedstudents_vw" . " WHERE Authors LIKE '%" . $_SESSION['name'] . "%'";
-            echo $sql_Select;
-            $result = mysqli_query($con, $sql_Select);
-            if ($result && mysqli_num_rows($result) == 0)
-            {
-                header("Location: ./create_new_thesis.php");
-            } else
-            {
-                header("Location: ./dashboard.php");
-            }
-        }
-
-
-        ?>
+        <div class="content">THIS IS THE DASHBOARD PAGE</div>
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

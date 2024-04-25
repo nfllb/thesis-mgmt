@@ -3,9 +3,7 @@ session_start();
 include './../dbconnect.php';
 if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 {
-
     ?>
-
     <!DOCTYPE html>
     <html lang="en">
 

@@ -64,7 +64,11 @@ body {
 }
 
 .thesis-text-color {
-	color: #d2691e;
+	color: #d2691e !important;
+}
+
+.thesis-modal-color {
+	background-color: #f4ede8 !important;
 }
 
 h6.thesis-text-color .badge {
@@ -86,6 +90,7 @@ h6.thesis-text-color .badge {
 thead {
 	background-color: #f4ede8 !important;
 }
+
 .black_text_hover_pointer:hover {
 	color: gray;
 	cursor: pointer;
@@ -159,6 +164,22 @@ div#thesisContainer.card.w-75.mb-3
 	padding: 0;
 	box-sizing: border-box;
 	font-family: "Open Sans", sans-serif;
+}
+
+.wrapper {
+	display: flex;
+}
+
+.sidebar {
+	width: 250px; /* Adjust the width as needed */
+	flex: 0 0 auto;
+	float: left;
+}
+
+.content {
+	flex: 1;
+	padding: 20px; /* Adjust the padding as needed */
+	margin-left: 260px;
 }
 
 .wrapper .sidebar {

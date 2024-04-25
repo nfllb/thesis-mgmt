@@ -20,8 +20,9 @@ if (!isset($_SESSION['username']) && !isset($_SESSION['userid']))
 
     <body>
         <div class="container d-flex justify-content-center align-items-center min-vh-100">
-            <form class="border shadow p-3 rounded login-form" action="php/credential-check.php" method="post">
-                <h3 class="text-center">Login</h3>
+            <form class="border shadow p-3 rounded login-form thesis-modal-color" action="php/credential-check.php"
+                method="post">
+                <h3 class="text-center thesis-text-color">Login</h3>
                 <?php if (isset($_GET['error']))
                 { ?>
                     <div class="alert alert-danger" role="alert">
@@ -30,11 +31,11 @@ if (!isset($_SESSION['username']) && !isset($_SESSION['userid']))
                     </div>
                 <?php } ?>
                 <div class="mb-3">
-                    <label for="username" class="form-label">User Name</label>
+                    <label for="username" class="form-label thesis-text-color">User Name</label>
                     <input type="text" class="form-control shadow" name="username" id="username">
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label thesis-text-color">Password</label>
                     <input type="password" name="password" class="form-control shadow mb1" id="password">
                     <a href="./forgotpassword/index.php" class="forgot-password">Forgot Password?</a>
                 </div>
