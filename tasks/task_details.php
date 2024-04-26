@@ -36,9 +36,14 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="./../css/styles.css">
     </head>
 
-    <body class="task-details">
+    <body class="content task-details">
         <div>
-            <a href="./../logout.php" class="btn btn-dark btn-sm">Logout</a>
+
+            <h3 style="position:absolute;margin-top:20px;">Task Details</h3>
+            <?php include ('./../header.php'); ?>
+            <?php include ('./../sidebar.php'); ?>
+
+            <hr>
 
             <?php
             $sql_WhereClause = " WHERE ThesisId = " . $thesisId;
@@ -67,7 +72,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 $thesis_instructor = $thesis["Instructor"];
                 ?>
             </div>
-            <hr>
 
             <h3 style='margin-left:10px;color:#d2691e !important;'><?php echo $thesis_title; ?></h3>
 

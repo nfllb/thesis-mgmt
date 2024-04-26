@@ -19,15 +19,13 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="./../css/styles.css">
     </head>
 
-    <body>
+    <body class="content">
         <div>
-            <h3>Task</h3>
-            <span>Name: <?php echo $_SESSION['name']; ?></span><br>
-            <span>UserName: <?php echo $_SESSION['username']; ?></span><br>
-            <span>Role: <?php echo $_SESSION['role']; ?></span><br>
-            <a href="./../logout.php" class="btn btn-dark btn-sm">Logout</a>
+            <h3 style="position:absolute;margin-top:20px;">Tasks</h3>
+            <?php include ('./../header.php'); ?>
+            <?php include ('./../sidebar.php'); ?>
+            <hr>
         </div>
-        <hr>
 
         <?php
         $sql_WhereClause = ' WHERE ';
@@ -54,6 +52,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             {
                 $thesis_id = $thesis["ThesisId"];
                 $thesis_title = $thesis["Title"];
+                $thesis_lastModDate = $thesis["LastModifiedDate"];
+                $formatted_date = date("F j, Y", strtotime($thesis_lastModDate));
                 $thesis_authors = $thesis["Authors"];
                 $authors_arr = explode(',', $thesis_authors);
                 echo "<div class='container'>
@@ -66,15 +66,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     echo "<span class='badge text-bg-secondary'>$author</span>";
                 }
                 echo "</h6>
-                            <a href='./../php/download-thesis.php' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>
-                            <br><span class='thesis-text-color'>Last Updated Date: March 10, 2024 </span>
+                            <a href='./../php/download-thesis.php?thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>
+                            <br><span class='thesis-text-color'>Last Updated Date: $formatted_date </span>
                         </div>
                     </div>
                     </div>";
             }
         } else
         {
-            echo "<div class='container'>
+            echo "<div class='content container'>
             <div id='thesisContainer' class='card w-100 mb-3'>
                 <div class='card-body'>
                     <div style='font-size:16px;'class='alert alert-danger' role='alert>

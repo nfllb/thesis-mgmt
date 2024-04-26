@@ -480,7 +480,8 @@ FROM checklist
 
 CREATE OR REPLACE VIEW `thesis_checklist_vw` AS
 SELECT t.ThesisId,
-tcm.Completed,
+c.CheckListId,
+c.Part,
 tcm.Status,
 t.Title,
 tgs.Authors,
@@ -488,6 +489,7 @@ tgs.Adviser,
 tgs.Instructor,
 c.StepNumber,
 c.TaskName,
+CONCAT(c.TaskNameAlias, '_', REPLACE(t.Title, " ", "_")) AS UploadedFileName,
 c.Assignee,
 c.Action
 FROM thesis t
@@ -497,3 +499,36 @@ LEFT JOIN checklist c
 ON c.CheckListId = tcm.CheckListId
 LEFT JOIN thesis_groupedstudents_vw tgs
 ON t.ThesisId = tgs.ThesisId;
+
+
+CREATE OR REPLACE VIEW `thesis_groupedstudents_vw` AS
+SELECT t.ThesisId AS ThesisId, 
+t.Title AS Title, 
+group_concat(distinct concat(s.FirstName,' ',s.LastName) separator ',') AS Authors, 
+adviser.Name AS Adviser, 
+instructor.Name AS Instructor,
+t.LastModifiedDate
+FROM thesis t 
+left join thesisstudentmap tsm 
+on tsm.ThesisId = t.ThesisId
+left join student s 
+on tsm.StudentId = s.StudentId 
+left join users adviser
+on t.AdviserId = adviser.UserId
+left join users instructor
+on instructor.UserId = t.InstructorId
+GROUP BY t.Title, adviser.Name, instructor.Name, t.LastModifiedDate;
+
+CREATE OR REPLACE VIEW thesis_student_adviser_vw AS
+SELECT t.Title AS Title, 
+concat(s.FirstName,' ',s.MiddleName,' ',s.LastName) AS StudentName, 
+s.Course AS Course, 
+a.Name AS Adviser, 
+t.DateOfFinalDefense AS DateOfFinalDefense 
+FROM thesis t 
+left join thesisstudentmap tsm 
+on t.ThesisId = tsm.ThesisId
+left join student s 
+on tsm.StudentId = s.StudentId
+left join users a 
+on t.AdviserId = a.UserId ;

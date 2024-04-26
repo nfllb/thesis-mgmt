@@ -116,6 +116,65 @@ INSERT INTO `checklist` (`CheckListId`, `Part`, `StepNumber`, `TaskName`, `TaskN
 (23, 1, 23, 'Issuance of Certificate of Approval or Certificate of Exemption', 'Certificate_of_Approval', 'UREB', 'Upload'),
 (24, 1, 24, 'END OF THESIS 1 / CAPSTONE 1', 'N/A', '0', 'Manual');
 
+INSERT INTO `checklist` (`CheckListId`, `Part`, `StepNumber`, `TaskName`, `Assignee`, `TaskNameAlias`, `Action`) VALUES
+(NULL, 2, 2, 'Checking the Chapter 3', 'Instructor', 'N/A', 'Approval'),
+(NULL, 2, 3, 'Writing the Chapter 4', 'Researchers', 'Chapter_4', 'Upload'),
+(NULL, 2, 4, 'Checking the Chapter 4', 'Instructor', 'N/A', 'Approval'),
+(NULL, 2, 5, 'Prepare files for initial plagiarism', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 6, 'Run initial plagiarism check. Provide result', 'Research Coordinator', 'Initial_Plagiarism_Check_Result', 'Upload'),
+(NULL, 2, 7, 'Endorsement for plagiarism certificate', 'Research Coordinator', 'Endorsement_for_Plagiarism_Certificate', 'Upload'),
+(NULL, 2, 8, 'Submit endorsement to URC', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 9, 'Issue Plagiarism Certificate', 'Research Coordinator', 'Plagiarism_Certificate', 'Upload'),
+(NULL, 2, 10, 'Prepare Form 15', 'Researchers', 'Thesis_2_Form_15', 'Upload'),
+(NULL, 2, 11, 'Print Form 13', 'Researchers', 'Thesis_2_Form_13', 'Upload'),
+(NULL, 2, 12, 'Print evaluation copies (3 copies)', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 13, 'Distribution of Form 13 and evaluation copies', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 14, 'Retrieval of Form 13', 'Research Coordinator', 'N/A', 'Manual'),
+(NULL, 2, 15, 'Payment of defense fees', 'Researchers', 'Thesis_2_Defense_Fees', 'Upload'),
+(NULL, 2, 16, 'Prepare Form 16', 'Researchers', 'Thesis_2_Form_16', 'Upload'),
+(NULL, 2, 17, 'Print Form 18', 'Research Coordinator', 'N/A', 'Manual'),
+(NULL, 2, 18, 'Proposal defense, Presentation, Noting of recommendations, Filling of Form 18, Retrieval of Form 18', 'Research Coordinator, Instructor', 'N/A', 'Approval'),
+(NULL, 2, 19, 'Accomplish Minutes of defense', 'Researchers', 'Thesis_2_Minutes_of_Defense', 'Upload'),
+(NULL, 2, 20, 'Prepare files for final plagiarism', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 21, 'Run final plagiarism check. Provide result', 'Research Coordinator', 'Final_Plagiarism_Result', 'Upload'),
+(NULL, 2, 22, 'Endorsement for plagiarism clearance', 'Researchers', 'Endorsement_for_plagiarism_clearance', 'Upload'),
+(NULL, 2, 23, 'Submit endorsement to URC', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 24, 'Issue Plagiarism Clearance', 'Researchers', 'Plagiarism_Clearance', 'Upload'),
+(NULL, 2, 25, 'Select editor', 'Researchers', 'N/A', ''),
+(NULL, 2, 26, 'Endorsement for editing', 'Researchers', 'Endorsement_for_editing', 'Upload'),
+(NULL, 2, 27, 'Submit file for editing', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 28, 'Editing of file, Submit result, Sign certification', 'Researchers', 'Signed_Certification', 'Upload'),
+(NULL, 2, 29, 'Submit certification to URC', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 30, 'Issue Editing Clearance', 'Researchers', 'Issue_Editing_Clearance', 'Upload'),
+(NULL, 2, 31, 'Reformat manuscript to single spacing', 'Researchers', 'Formatted_Manuscript', 'Upload'),
+(NULL, 2, 32, 'Submit final report to UREB', 'Researchers', 'Final_Report_to_UREB', 'Upload'),
+(NULL, 2, 33, 'Issue Ethics Clearance', 'Researchers', 'Ethics_Clearance', 'Upload'),
+(NULL, 2, 34, 'Prepare Declaration of Originality', 'Researchers', 'Declaration_of_Originality', 'Upload'),
+(NULL, 2, 35, 'Notarization of Declaration of Originality', 'Researchers', 'Notarized_Declaration_of_Originality', 'Upload'),
+(NULL, 2, 36, 'Upload final manuscript in single space', 'Researchers', 'Final_Manuscript', 'Upload'),
+(NULL, 2, 37, 'Checking of final manuscript in single space', 'Instructor', 'N/A', 'Approval'),
+(NULL, 2, 38, 'Printing of final manuscript sample copy', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 39, 'Verification of sample copy', 'Instructor', 'N/A', 'Approval'),
+(NULL, 2, 40, 'Signing of Approval Sheet', 'Researchers', 'Approval_Sheet', 'Upload'),
+(NULL, 2, 41, 'Printing of additional copies, Verification of print outs', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 42, 'Binding of copies', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 43, 'Signing of Approval Sheets of hardbound copies', 'Researchers', 'Approval_Sheet_for_hardbound_copies', 'Upload'),
+(NULL, 2, 44, 'Prepare files for burning', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 45, 'Checking of files for burning', 'Research Coordinator', 'N/A', 'Approval'),
+(NULL, 2, 46, 'Burning of CDs', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 47, 'Distribution of hardbounds', 'Researchers', 'N/A', 'Manual'),
+(NULL, 2, 48, 'Submission of CDs, Submission of Evaluation forms (Form 31, Form 39, Form 41)', 'Researchers', 'Evaluation_Form', 'Upload'),
+(NULL, 2, 49, 'Verification of submitted CDs, Updating of checklist', 'Research Coordinator', 'N/A', 'Manual'),
+(NULL, 2, 50, 'Submission of working hardware prototypes (BSCpE, BSECE, BSEE)', 'Researchers', 'Working_Hardware_Prototype', 'Upload'),
+(NULL, 2, 51, 'Submission of system installation package (BSIT)', 'Researchers', 'System_Installation_Package', 'Upload'),
+(NULL, 2, 52, 'END OF THESIS 2 CAPSTONE 2', '', '', 'Manual')
+
+INSERT INTO thesis_checklist_map
+SELECT 1, CheckListId, 0, 'Not Started' FROM checklist WHERE Part = 2
+INSERT INTO thesis_checklist_map
+SELECT 2, CheckListId, 0, 'Not Started' FROM checklist WHERE Part = 2
+INSERT INTO thesis_checklist_map
+SELECT 3, CheckListId, 0, 'Not Started' FROM checklist WHERE Part = 2
 -- --------------------------------------------------------
 
 --
@@ -855,3 +914,31 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+DELIMITER //
+
+CREATE PROCEDURE InsertCustomerAndOrder(
+    IN title VARCHAR(1000),
+    IN proponents VARCHAR(1000),
+    IN adviser INT,
+    IN instructor INT,
+    IN school_year VARCHAR(100),
+    IN dateofdefense DATE,
+    IN createdby VARCHAR(255)
+)
+BEGIN
+    DECLARE last_thesis_id INT;
+
+    -- Insert into thesis table
+    INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES 
+    (NULL, title, adviser, instructor, 'SAINT MARY’S UNIVERSITY', school_year, dateofdefense, createdby, current_timestamp(), createdby, current_timestamp())
+    SET last_thesis_id = LAST_INSERT_ID(); 
+
+    -- Insert into thesisstudentmap table
+    INSERT INTO `thesisstudentmap` (`ThesisStudentMapId`, `ThesisId`, `StudentId`) VALUES (NULL, last_thesis_id, NULL)
+    INSERT INTO orders (customer_id, product_name, quantity) VALUES (last_customer_id, p_product_name, p_quantity);
+    
+END //
+
+DELIMITER ;

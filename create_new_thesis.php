@@ -21,15 +21,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="./css/styles.css">
     </head>
 
-    <body>
+    <body class="content">
+        <h3 style="position:absolute;margin-top:20px;">Create New Thesis</h3>
         <?php include ('./header.php'); ?>
         <?php include ('./sidebar.php'); ?>
 
         <hr>
-        <div class="content container d-flex justify-content-center align-items-center ">
-            <form class="border shadow p-3 rounded new-thesis-form thesis-modal-color">
-                <h3 class="text-center thesis-text-color">Create New Thesis</h3>
-
+        <div class="container d-flex justify-content-center align-items-center ">
+            <form id="createForm" class="border shadow p-3 rounded new-thesis-form thesis-modal-color">
+                <!-- <h3 class="text-center thesis-text-color">Create New Thesis</h3> -->
                 <div class="mb-3">
                     <div class="form-group">
                         <div class="mb-3">
@@ -56,8 +56,21 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                         </div>
                     </div>
                     <div class="form-group">
+                        <div class="mb-3">
+                            <label for="year" class="form-label thesis-text-color">School Year</label>
+                            <input type="text" name="year" class="form-control shadow" id="year">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="mb-3">
+                            <label for="dateofdefense" class="form-label thesis-text-color">Date of Final Defense</label>
+                            <input type="text" name="dateofdefense" class="form-control shadow" id="dateofdefense">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div>
-                            <button type="submit" class="btn btn-primary form-control">Submit</button>
+                            <button type="submit" class="btn btn-primary form-control"
+                                onclick="submitForm()">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -73,8 +86,20 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
 
-
-
+        <script>
+            function submitForm() {
+                var formData = $("#createForm").serialize();
+                formData.append('action', 'create_new_thesis');
+                $.ajax({
+                    type: "POST",
+                    url: "thesis-creation.php",
+                    data: formData,
+                    success: function (response) {
+                        alert(response);
+                    }
+                });
+            }
+        </script>
     </body>
 
     </html> <?php } else

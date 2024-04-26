@@ -36,7 +36,7 @@ if (isset($_POST['save_editor']))
 
         $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklistId;
         $query_run = mysqli_query($con, $update_query);
-        
+
         return;
     }
 
@@ -75,6 +75,8 @@ if (isset($_POST['upload_file_step']))
                 // Upload file to the server 
                 if (move_uploaded_file($fileTemp, $targetFilePath))
                 {
+                    $delete_query = "DELETE FROM thesis_checklist_file_map WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
+                    $run_query = mysqli_query($con, $delete_query);
                     // Insert form data in the database 
                     $sqlQ = "INSERT INTO thesis_checklist_file_map (`ThesisChecklistFileId`, `ThesisId`, `CheckListId`, `FileName`, `FilePath`, `UploadedBy`, `UploadedDate`) VALUES (NULL,?,?,?,?,?,NOW());";
                     $stmt = $con->prepare($sqlQ);

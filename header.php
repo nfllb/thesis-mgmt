@@ -3,7 +3,7 @@ if (!isset($_SESSION))
 {
     session_start();
 }
-include './dbconnect.php';
+include (dirname(__FILE__) . "/dbconnect.php");
 ?>
 
 <header class="p-3 d-flex justify-content-end">
@@ -17,6 +17,6 @@ include './dbconnect.php';
             </div>
         </div>
         <!-- Logout button -->
-        <a href="./logout.php" class="btn btn-sm btn-primary text-decoration-none">Logout</a>
+        <a href="./logout.php" id="logout" class="btn btn-sm btn-primary text-decoration-none">Logout</a>
     </div>
 </header>
