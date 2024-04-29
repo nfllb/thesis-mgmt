@@ -1,5 +1,5 @@
 <?php
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 $thesisId = $_GET["thesisId"];
 $sql_Select = "SELECT * FROM thesis_checklist_file_map WHERE ThesisId = " . $thesisId;
@@ -35,5 +35,5 @@ if ($result && mysqli_num_rows($result) > 0)
     readfile($zip_name);
 } else
 {
-    header("Location: ../tasks/index.php?error=There are no uploaded files for this thesis.");
+    header("Location: /thesis-mgmt/tasks/index.php?error=There are no uploaded files for this thesis.");
 }

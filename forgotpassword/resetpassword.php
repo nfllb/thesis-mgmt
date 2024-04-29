@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link rel="stylesheet" href="./../css/styles.css">
+    <link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
 </head>
 
 <body>
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
-        <form class="border shadow p-3 rounded login-form" action="./../php/resetpassword-check.php" method="post">
+        <form class="border shadow p-3 rounded login-form" action="/thesis-mgmt/php/resetpassword-check.php"
+            method="post">
             <h3 class="text-center">Reset Password</h3>
             <div class="mb-3">
                 <div class="form-group mb-4">

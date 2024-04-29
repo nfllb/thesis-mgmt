@@ -13,8 +13,8 @@ body {
 
 .form-control,
 .form-select {
-	font-size: 13px;
-	border-radius: 0.75rem;
+	font-size: 13px !important;
+	border-radius: 0.75rem !important;
 }
 
 .btn-primary {
@@ -78,6 +78,11 @@ h6.thesis-text-color .badge {
 }
 
 #thesisContainer {
+	border-radius: 15px !important;
+	background-color: #f4ede8;
+}
+
+#thesisProgressContainer {
 	border-radius: 15px !important;
 	background-color: #f4ede8;
 }
@@ -299,4 +304,88 @@ body.active .wrapper .sidebar {
 body.active .wrapper .section {
 	margin-left: 0;
 	width: 100%;
+}
+
+.mt-100 {
+	margin-top: 100px;
+}
+
+.choices__input {
+	font-size: 13px !important;
+}
+
+.choices__list--dropdown
+	.choices__item--selectable {
+	font-size: 12px !important;
+}
+
+.progress-container {
+	width: 200px;
+	height: 100px;
+	position: relative;
+	border-radius: 15px !important;
+	background-color: #f4ede8;
+}
+
+.progress-circle {
+	fill: none;
+	stroke-width: 10;
+	stroke-linecap: round;
+}
+
+.progress-background {
+	stroke: #ccc;
+}
+
+.progress-bar {
+	stroke: #d2691e;
+	/* Change color to orange */
+}
+
+.progress-text {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	fill: #000;
+	text-anchor: middle;
+}
+
+.w-60 {
+	width: 60% !important;
+}
+
+.w-30 {
+	width: 30% !important;
+}
+
+.w-40 {
+	width: 40% !important;
+}
+
+.w-50 {
+	width: 50% !important;
+}
+
+.label-completed,
+.label-in-progress,
+.label-not-started,
+.label-total-parts {
+	font-size: 11px;
+	font-family: Arial, sans-serif;
+	fill: #333;
+	font-weight: bolder;
+}
+
+.completed-value {
+	color: green !important;
+	font-weight: bolder;
+}
+
+.in-progress-value {
+	color: darkorange !important;
+	font-weight: bolder;
+}
+
+.not-started-value {
+	color: red !important;
+	font-weight: bolder;
 }

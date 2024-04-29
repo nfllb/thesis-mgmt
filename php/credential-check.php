@@ -1,6 +1,6 @@
 <?php
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 function test_input($data)
 {
@@ -15,10 +15,10 @@ $password = test_input($_POST['password']);
 
 if (empty($username))
 {
-    header("Location: ../login.php?error=Username is required");
+    header("Location: /thesis-mgmt/login.php?error=Username is required");
 } else if (empty($password))
 {
-    header("Location: ../login.php?error=Password is required");
+    header("Location: /thesis-mgmt/login.php?error=Password is required");
 } else
 {
 
@@ -38,14 +38,14 @@ if (empty($username))
             $_SESSION['userid'] = $row['UserId'];
             $_SESSION['role'] = $row['Role'];
             $_SESSION['username'] = $row['UserName'];
-            header("Location: ./../index.php");
+            header("Location: /thesis-mgmt/index.php");
 
         } else
         {
-            header("Location: ../login.php?error=Incorect User name or password");
+            header("Location: /thesis-mgmt/login.php?error=Incorect User name or password");
         }
     } else
     {
-        header("Location: ../login.php?error=Incorect User name or password");
+        header("Location: /thesis-mgmt/login.php?error=Incorect User name or password");
     }
 }

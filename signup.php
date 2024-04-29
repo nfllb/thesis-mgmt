@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
     </head>
 
     <body>
@@ -25,7 +25,8 @@
                 <?php } ?>
                 <div class="mb-3">
                     <label for="role" class="form-label">Academic Role</label>
-                    <select class="form-select mb-2 shadow" name="role" id="role" onchange="toggleDiv(this.value)">
+                    <select required class="form-select mb-2 shadow" name="role" id="role"
+                        onchange="toggleDiv(this.value)">
                         <option selected disabled value="selectRole">--Select Role--</option>
                         <option value="student">Student</option>
                         <option value="researchcoordinator">Research Coordinator</option>
@@ -37,7 +38,7 @@
                         <div class="mb-2">
                             <label for="department" class="form-label">Department</label>
                         </div>
-                        <select class="form-select mb-2 shadow" name="department" id=department>
+                        <select required class="form-select mb-2 shadow" name="department" id=department>
                             <option selected value="engineering">School of Engineering, Architecture, and Information
                                 Technology
                             </option>
@@ -45,7 +46,7 @@
                         <div class="mb-2">
                             <label for="course" class="form-label">Course</label>
                         </div>
-                        <select class="form-select mb-2 shadow" name="course" id=course>
+                        <select required class="form-select mb-2 shadow" name="course" id=course>
                             <option selected disabled value="course">--Select Course--</option>
                             <option value="Architecture">Architecture</option>
                             <option value="Civil Engineering">Civil Engineering</option>
@@ -59,7 +60,7 @@
                         <div class="mb-2">
                             <label for="year" class="form-label">Year</label>
                         </div>
-                        <select class="form-select mb-2 shadow" name="year" id=year>
+                        <select required class="form-select mb-2 shadow" name="year" id=year>
                             <option selected disabled value="years">--Select Year--</option>
                             <option value="Third">Third</option>
                             <option value="Fourth">Fourth</option>
@@ -109,7 +110,7 @@
                     <div class="form-group">
                         <div>
                             <button type="submit" class="btn btn-primary form-control">Create my account</button>
-                            <span class="ca">Already have an account? <a href="./login.php"
+                            <span class="ca">Already have an account? <a href="/thesis-mgmt/login.php"
                                     class="signup-link">Login</a></span>
                         </div>
                     </div>

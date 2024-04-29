@@ -1,6 +1,6 @@
 <?php
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 {
     ?>
@@ -16,14 +16,14 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-        <link rel="stylesheet" href="./../css/styles.css">
+        <link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
     </head>
 
     <body class="content">
         <div>
             <h3 style="position:absolute;margin-top:20px;">Tasks</h3>
-            <?php include ('./../header.php'); ?>
-            <?php include ('./../sidebar.php'); ?>
+            <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
+            <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
             <hr>
         </div>
 
@@ -59,14 +59,14 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 echo "<div class='container'>
                     <div id='thesisContainer' class='card w-75 mb-3'>
                         <div class='card-body'>
-                            <a id='thesisName' href='./task_details.php?thesisId=$thesis_id'><h5 class='card-title black_text_hover_pointer'>$thesis_title</h5></a>
+                            <a id='thesisName' href='/thesis-mgmt/tasks/task_details.php?thesisId=$thesis_id'><h5 class='card-title black_text_hover_pointer'>$thesis_title</h5></a>
                             <h6 class='thesis-text-color'>Authors: ";
                 foreach ($authors_arr as $author)
                 {
                     echo "<span class='badge text-bg-secondary'>$author</span>";
                 }
                 echo "</h6>
-                            <a href='./../php/download-thesis.php?thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>
+                            <a href='/thesis-mgmt/php/download-thesis.php?thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>
                             <br><span class='thesis-text-color'>Last Updated Date: $formatted_date </span>
                         </div>
                     </div>
@@ -108,5 +108,5 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     </html>
 <?php } else
 {
-    header("Location: ./../login.php");
+    header("Location: /thesis-mgmt/login.php");
 } ?>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 {
@@ -33,15 +33,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
         <link rel="stylesheet" href="https://unpkg.com/@jarstone/dselect/dist/css/dselect.css">
-        <link rel="stylesheet" href="./../css/styles.css">
+        <link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
     </head>
 
     <body class="content task-details">
         <div>
 
             <h3 style="position:absolute;margin-top:20px;">Task Details</h3>
-            <?php include ('./../header.php'); ?>
-            <?php include ('./../sidebar.php'); ?>
+            <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
+            <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
 
             <hr>
 
@@ -105,7 +105,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                     </thead>
                                     <tbody class='table-group-divider'>";
                                 $prev_step = null;
-                                echo $prev_step;
                                 $index = 0;
                                 while ($step = mysqli_fetch_assoc($result))
                                 {
@@ -189,7 +188,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                         }
 
                                         echo "</td>";
-                                    } else if ($step["Action"] == 'Manual' && $step_status != 'Completed' && $show_status == false && $prev_step["Status"] == 'Completed')
+                                    } else if ($step["Action"] == 'Manual' && $step_status != 'Completed' && $show_status == false && $prev_step != null && $prev_step["Status"] == 'Completed')
                                     {
                                         echo "<td style='width: 10%;'>
                                             <center>
@@ -199,7 +198,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                             </center>
                                         </td>";
 
-                                    } else if ($step["Action"] == 'Approval' && $step_status == 'Not Started' && $prev_step["Status"] == 'Completed')
+                                    } else if ($step["Action"] == 'Approval' && $step_status == 'Not Started' && $prev_step != null && $prev_step["Status"] == 'Completed')
                                     {
                                         echo "<td style='width: 10%;'>
                                             <center>
@@ -316,7 +315,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                     </thead>
                                     <tbody class='table-group-divider'>";
                                 $prev_step = null;
-                                echo $prev_step;
                                 $index = 0;
                                 while ($step = mysqli_fetch_assoc($result))
                                 {
@@ -399,7 +397,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                         }
 
                                         echo "</td>";
-                                    } else if ($step["Action"] == 'Manual' && $step_status != 'Completed' && $show_status == false && $prev_step["Status"] == 'Completed')
+                                    } else if ($step["Action"] == 'Manual' && $step_status != 'Completed' && $show_status == false && $prev_step != null && $prev_step["Status"] == 'Completed')
                                     {
                                         echo "<td style='width: 10%;'>
                                             <center>
@@ -409,7 +407,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                             </center>
                                         </td>";
 
-                                    } else if ($step["Action"] == 'Approval' && $step_status == 'Not Started' && $prev_step["Status"] == 'Completed')
+                                    } else if ($step["Action"] == 'Approval' && $step_status == 'Not Started' && $prev_step != null && $prev_step["Status"] == 'Completed')
                                     {
                                         echo "<td style='width: 10%;'>
                                             <center>
@@ -854,5 +852,5 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
     </html> <?php } else
 {
-    header("Location: ./../login.php");
+    header("Location: /thesis-mgmt/login.php");
 } ?>

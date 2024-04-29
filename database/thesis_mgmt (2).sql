@@ -916,9 +916,35 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 
+/***********************************************/
+CREATE PROCEDURE SplitAndInsertArrayString()
+BEGIN
+    DECLARE pos INT DEFAULT 1;
+    DECLARE len INT;
+    DECLARE value VARCHAR(255);
+
+    -- Create a temporary table to store the individual values
+    DROP TEMPORARY TABLE IF EXISTS temp_students;
+    CREATE TEMPORARY TABLE temp_students (StudentId VARCHAR(255));
+
+    -- Find the number of values in the array string
+    SET len = CHAR_LENGTH(array_string) - CHAR_LENGTH(REPLACE(array_string, ',', '')) + 1;
+
+    -- Use a loop to extract each value and insert it into the temporary table
+    WHILE pos <= len DO
+        SET value = SUBSTRING_INDEX(SUBSTRING_INDEX(array_string, ',', pos), ',', -1);
+        INSERT INTO temp_students (StudentId) VALUES (value);
+        SET pos = pos + 1;
+    END WHILE;
+END
+
+
+/***********************************************/
+DROP PROCEDURE IF EXISTS CreateNewThesis;
+
 DELIMITER //
 
-CREATE PROCEDURE InsertCustomerAndOrder(
+CREATE PROCEDURE CreateNewThesis(
     IN title VARCHAR(1000),
     IN proponents VARCHAR(1000),
     IN adviser INT,
@@ -928,17 +954,182 @@ CREATE PROCEDURE InsertCustomerAndOrder(
     IN createdby VARCHAR(255)
 )
 BEGIN
+    -- Declare a variable to track errors
+    DECLARE error_occurred BOOLEAN DEFAULT FALSE;
     DECLARE last_thesis_id INT;
 
-    -- Insert into thesis table
-    INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES 
-    (NULL, title, adviser, instructor, 'SAINT MARY’S UNIVERSITY', school_year, dateofdefense, createdby, current_timestamp(), createdby, current_timestamp())
-    SET last_thesis_id = LAST_INSERT_ID(); 
+    -- Start the transaction
+    START TRANSACTION;
 
-    -- Insert into thesisstudentmap table
-    INSERT INTO `thesisstudentmap` (`ThesisStudentMapId`, `ThesisId`, `StudentId`) VALUES (NULL, last_thesis_id, NULL)
-    INSERT INTO orders (customer_id, product_name, quantity) VALUES (last_customer_id, p_product_name, p_quantity);
+    /* Insert into thesis table */
+    INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES 
+    (NULL, title, adviser, instructor, 'SAINT MARY’S UNIVERSITY', school_year, dateofdefense, createdby, current_timestamp(), createdby, current_timestamp());
+
+    SELECT LAST_INSERT_ID() INTO last_thesis_id;
     
+    /* Split and Save proponents to temp_students */
+    CALL SplitAndInsertArrayString(proponents);
+    
+    /* Insert into thesisstudentmap table */
+    INSERT INTO `thesisstudentmap` (`ThesisStudentMapId`, `ThesisId`, `StudentId`) 
+    SELECT NULL, last_thesis_id, s.StudentId 
+    FROM temp_students temp
+    LEFT JOIN Student s
+    ON temp.StudentId = s.UserId;
+
+    /* Insert into thesis_checklist_map table */
+    INSERT INTO `thesis_checklist_map`
+    SELECT NULL, last_thesis_id, CheckListId, 0, 'Not Started' FROM checklist;
+
+    /* Create a temporary table to store the individual values */
+    DROP TEMPORARY TABLE IF EXISTS temp_approvers;
+    CREATE TEMPORARY TABLE temp_approvers (CheckListId INT, Approver VARCHAR(255));
+
+    INSERT INTO temp_approvers (CheckListId, Approver)
+    SELECT CheckListId,
+     TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(c.Assignee, ',', numbers.n), ',', -1)) AS Approver
+    FROM checklist c
+    JOIN (
+    SELECT 
+        (a.N + b.N * 10 + 1) AS n
+    FROM 
+        (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS a
+        CROSS JOIN (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS b
+) AS numbers
+ON 
+    CHAR_LENGTH(c.Assignee) - CHAR_LENGTH(REPLACE(c.Assignee, ',', '')) >= numbers.n - 1
+    WHERE Action = 'Approval';
+
+    /* Insert into thesis_checklist_approval_map */
+    INSERT INTO `thesis_checklist_approval_map`
+    SELECT NULL, 
+            last_thesis_id AS ThesisId, 
+            CheckListId,
+            CASE
+              WHEN Approver = 'Adviser' THEN adviser
+              WHEN Approver = 'Instructor' THEN instructor
+            END AS ApproverId,
+            0 AS Approved
+    FROM temp_approvers
+    WHERE Approver IN ('Adviser', 'Instructor');
+
+    INSERT INTO `thesis_checklist_approval_map`
+    SELECT NULL, 
+            last_thesis_id AS ThesisId, 
+            a.CheckListId,
+            u.UserId AS ApproverId,
+            0 AS Approved
+    FROM temp_approvers a
+    LEFT JOIN users u
+    ON a.Approver = u.Role
+    AND u.Role = 'Research Coordinator'
+    WHERE a.Approver = 'Research Coordinator';
+
+    -- Check for errors
+    IF NOT error_occurred THEN
+        -- If no errors, commit the transaction
+        COMMIT;
+    ELSE
+        -- If an error occurred, rollback the transaction
+        ROLLBACK;
+    END IF;
+
+    DROP TEMPORARY TABLE IF EXISTS temp_students;
+    DROP TEMPORARY TABLE IF EXISTS temp_approvers;
+END //
+
+DELIMITER ;
+
+/***********************************************/
+DROP PROCEDURE IF EXISTS CreateNewUser;
+
+DELIMITER //
+
+CREATE PROCEDURE CreateNewUser(
+    IN _role VARCHAR(255),
+    IN _name VARCHAR(255),
+    IN username VARCHAR(255),
+    IN _password VARCHAR(255), 
+    IN email VARCHAR(255),
+    IN secquestion VARCHAR(255),
+    IN securityanswer VARCHAR(255),
+    IN course VARCHAR(255),
+    IN department VARCHAR(255),
+    IN _year VARCHAR(255)
+)
+BEGIN
+    -- Declare a variable to track errors
+    DECLARE error_occurred BOOLEAN DEFAULT FALSE;
+    DECLARE last_thesis_id INT;
+
+    -- Start the transaction
+    START TRANSACTION;
+
+    -- Insert into users table
+    INSERT INTO `users` (UserId, Role, Name, UserName, Password, Email, SecurityQuestion, SecurityAnswer) 
+    VALUES (NULL, _role, _name, username, _password, email, secquestion, securityanswer);
+
+    -- Get the last insert id
+    SELECT LAST_INSERT_ID() INTO last_thesis_id;
+
+    -- If role is Student, insert into student table
+    IF _role = 'Student' THEN
+        INSERT INTO `student` 
+        SELECT NULL, 
+            UserId, 
+            SUBSTRING_INDEX(Name, ' ', 1) AS FirstName, 
+            NULL AS MiddleName, 
+            TRIM(SUBSTRING_INDEX(Name, ' ', -1)) AS LastName,
+            course,
+            department,
+            _year,
+            current_timestamp,
+            _name
+        FROM users
+        WHERE UserId = last_thesis_id;
+    END IF;
+
+    -- Check for errors
+    IF NOT error_occurred THEN
+        -- If no errors, commit the transaction
+        COMMIT;
+    ELSE
+        -- If an error occurred, rollback the transaction
+        ROLLBACK;
+    END IF;
+END //
+
+DELIMITER ;
+
+/***********************************************/
+
+DROP PROCEDURE IF EXISTS CalculateThesisProgress;
+
+DELIMITER //
+
+CREATE PROCEDURE CalculateThesisProgress(IN thesisId INT)
+BEGIN
+    DECLARE total INT;
+    DECLARE completed INT;
+    DECLARE inProgress INT;
+    DECLARE notStarted INT;
+    DECLARE percentage DECIMAL(5, 0);
+    
+    SET @sql := CONCAT('CREATE TEMPORARY TABLE Temp_Table SELECT * FROM thesis_checklist_vw WHERE ThesisId = ', thesisId, ';');
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+    
+    SELECT COUNT(*) INTO total FROM Temp_Table;
+    SELECT COUNT(*) INTO completed FROM Temp_Table WHERE Status = 'Completed';
+    SELECT COUNT(*) INTO inProgress FROM Temp_Table WHERE Status = 'In Progress';
+    SELECT COUNT(*) INTO notStarted FROM Temp_Table WHERE Status = 'Not Started';
+    SET percentage := (completed / total) * 100;
+    
+    -- -- Select results
+    SELECT total AS Total, completed AS Completed, inProgress AS InProgress, notStarted AS NotStarted, ROUND(percentage, 0) AS Percentage;
+
+    DROP TEMPORARY TABLE IF EXISTS Temp_Table;
 END //
 
 DELIMITER ;

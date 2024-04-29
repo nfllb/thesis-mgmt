@@ -10,7 +10,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
             integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
-        <link rel="stylesheet" href="././css/styles.css">
+        <link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
 
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,8 +19,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     </head>
 
     <body>
-        <?php include ('./header.php'); ?>
-        <?php include ('./sidebar.php'); ?>
+        <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
+        <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
         <hr>
 
         <div class="content">THIS IS THE DASHBOARD PAGE</div>
@@ -46,5 +46,5 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     </html>
 <?php } else
 {
-    header("Location: ./login.php");
+    header("Location: /thesis-mgmt/login.php");
 } ?>

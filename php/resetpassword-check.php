@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 function test_input($data)
 {
@@ -25,14 +25,14 @@ if ($newpassword == $confirmpassword)
     {
         session_unset();
         session_destroy();
-        header("Location: ../login.php");
+        header("Location: /thesis-mgmt/login.php");
         exit();
     } else
     {
-        header("Location: ./../forgotpassword/resetpassword.php?error=unknown error occurred");
+        header("Location: /thesis-mgmt/forgotpassword/resetpassword.php?error=unknown error occurred");
         exit();
     }
 } else
 {
-    header("Location: ./../forgotpassword/resetpassword.php?error=Password does not match");
+    header("Location: /thesis-mgmt/forgotpassword/resetpassword.php?error=Password does not match");
 }

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 require_once ("./../plugins/vendor/autoload.php");
 
 use PhpOffice\PhpWord\TemplateProcessor;

@@ -17,6 +17,6 @@ include (dirname(__FILE__) . "/dbconnect.php");
             </div>
         </div>
         <!-- Logout button -->
-        <a href="./logout.php" id="logout" class="btn btn-sm btn-primary text-decoration-none">Logout</a>
+        <a href="/thesis-mgmt/logout.php" id="logout" class="btn btn-sm btn-primary text-decoration-none">Logout</a>
     </div>
 </header>

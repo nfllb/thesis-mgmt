@@ -532,3 +532,85 @@ left join student s
 on tsm.StudentId = s.StudentId
 left join users a 
 on t.AdviserId = a.UserId ;
+
+
+DELIMITER //
+
+CREATE PROCEDURE CreateNewThesis(
+    IN title VARCHAR(1000),
+    IN proponents VARCHAR(1000),
+    IN adviser INT,
+    IN instructor INT,
+    IN school_year VARCHAR(100),
+    IN dateofdefense DATE,
+    IN createdby VARCHAR(255)
+)
+BEGIN
+    DECLARE last_thesis_id INT;
+
+    /* Insert into thesis table */
+    INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES 
+    (NULL, title, adviser, instructor, 'SAINT MARY’S UNIVERSITY', school_year, dateofdefense, createdby, current_timestamp(), createdby, current_timestamp());
+
+    SELECT LAST_INSERT_ID() INTO last_thesis_id;
+    
+    /* Split and Save proponents to temp_students */
+    CALL SplitAndInsertArrayString(proponents);
+    
+    /* Insert into thesisstudentmap table */
+    INSERT INTO `thesisstudentmap` (`ThesisStudentMapId`, `ThesisId`, `StudentId`) 
+    SELECT NULL, last_thesis_id, StudentId FROM temp_students;
+
+    /* Insert into thesis_checklist_map table */
+    INSERT INTO `thesis_checklist_map`
+    SELECT NULL, last_thesis_id, CheckListId, 0, 'Not Started' FROM checklist;
+
+    /* Create a temporary table to store the individual values */
+    DROP TEMPORARY TABLE IF EXISTS temp_approvers;
+    CREATE TEMPORARY TABLE temp_approvers (CheckListId INT, Approver VARCHAR(255));
+
+    INSERT INTO temp_approvers (CheckListId, Approver)
+    SELECT CheckListId,
+     TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(c.Assignee, ',', numbers.n), ',', -1)) AS Approver
+    FROM checklist c
+    JOIN (
+    SELECT 
+        (a.N + b.N * 10 + 1) AS n
+    FROM 
+        (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS a
+        CROSS JOIN (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) AS b
+) AS numbers
+ON 
+    CHAR_LENGTH(c.Assignee) - CHAR_LENGTH(REPLACE(c.Assignee, ',', '')) >= numbers.n - 1
+    WHERE Action = 'Approval';
+
+    /* Insert into thesis_checklist_approval_map */
+    INSERT INTO `thesis_checklist_approval_map`
+    SELECT NULL, 
+            last_thesis_id AS ThesisId, 
+            CheckListId,
+            CASE
+              WHEN Approver = 'Adviser' THEN adviser
+              WHEN Approver = 'Instructor' THEN instructor
+            END AS ApproverId,
+            0 AS Approved
+    FROM temp_approvers
+    WHERE Approver IN ('Adviser', 'Instructor');
+
+    INSERT INTO `thesis_checklist_approval_map`
+    SELECT NULL, 
+            last_thesis_id AS ThesisId, 
+            a.CheckListId,
+            u.UserId AS ApproverId,
+            0 AS Approved
+    FROM temp_approvers a
+    LEFT JOIN users u
+    ON a.Approver = u.Role
+    AND u.Role = 'Research Coordinator'
+    WHERE a.Approver = 'Research Coordinator';
+
+    DROP TEMPORARY TABLE IF EXISTS temp_students;
+    DROP TEMPORARY TABLE IF EXISTS temp_approvers;
+END //
+
+DELIMITER ;

@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 if (isset($_POST['update_step']))
 {
@@ -52,7 +52,7 @@ if (isset($_POST['upload_file_step']))
 
     if ($action == 'Upload')
     {
-        $uploadDir = './../uploads/';
+        $uploadDir = '/thesis-mgmt/uploads/';
 
         // Allowed file types 
         $allowTypes = array('pdf', 'doc', 'docx', 'jpg', 'png', 'jpeg');

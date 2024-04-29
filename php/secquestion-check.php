@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 function test_input($data)
 {
@@ -15,8 +15,8 @@ $secanswer = test_input($_POST['secanswer']);
 
 if ($secanswer == $_SESSION['sec_answer'])
 {
-    header("Location: ./../forgotpassword/resetpassword.php");
+    header("Location: /thesis-mgmt/forgotpassword/resetpassword.php");
 } else
 {
-    header("Location: ./../forgotpassword/securityquestion.php?error=Incorrect security answer.");
+    header("Location: /thesis-mgmt/forgotpassword/securityquestion.php?error=Incorrect security answer.");
 }

@@ -15,13 +15,13 @@ if (!isset($_SESSION['username']) && !isset($_SESSION['userid']))
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
     </head>
 
     <body>
         <div class="container d-flex justify-content-center align-items-center min-vh-100">
-            <form class="border shadow p-3 rounded login-form thesis-modal-color" action="php/credential-check.php"
-                method="post">
+            <form class="border shadow p-3 rounded login-form thesis-modal-color"
+                action="/thesis-mgmt/php/credential-check.php" method="post">
                 <h3 class="text-center thesis-text-color">Login</h3>
                 <?php if (isset($_GET['error']))
                 { ?>
@@ -37,11 +37,12 @@ if (!isset($_SESSION['username']) && !isset($_SESSION['userid']))
                 <div class="mb-3">
                     <label for="password" class="form-label thesis-text-color">Password</label>
                     <input type="password" name="password" class="form-control shadow mb1" id="password">
-                    <a href="./forgotpassword/index.php" class="forgot-password">Forgot Password?</a>
+                    <a href="/thesis-mgmt/forgotpassword/index.php" class="forgot-password">Forgot Password?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary form-control">Log in</button>
-                <span class="ca">Don't have an account? <a href="./signup.php" class="signup-link">Signup</a></span>
+                <span class="ca">Don't have an account? <a href="/thesis-mgmt/signup.php"
+                        class="signup-link">Signup</a></span>
             </form>
         </div>
     </body>

@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include './../dbconnect.php';
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 function test_input($data)
 {
@@ -22,8 +22,8 @@ if (mysqli_num_rows($result) === 1)
     $_SESSION['username'] = $row['UserName'];
     $_SESSION['sec_question'] = $row['SecurityQuestion'];
     $_SESSION['sec_answer'] = $row['SecurityAnswer'];
-    header("Location: ./../forgotpassword/securityquestion.php");
+    header("Location: /thesis-mgmt/forgotpassword/securityquestion.php");
 } else
 {
-    header("Location: ./../forgotpassword/index.php?error=Username does not exists.");
+    header("Location: /thesis-mgmt/forgotpassword/index.php?error=Username does not exists.");
 }

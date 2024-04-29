@@ -22,7 +22,7 @@
             </li>
             <!-- Thesis -->
             <li>
-                <a href="#">
+                <a href="/thesis-mgmt/thesis/index.php">
                     <span class="icon"><i class="fas fa-user-friends"></i></span>
                     <span class="item">Thesis</span>
                 </a>
@@ -50,14 +50,14 @@
             </li>
             <!-- Reports -->
             <li>
-                <a href="./reports.php">
+                <a href="/thesis-mgmt/reports/index.php">
                     <span class="icon"><i class="fas fa-user-shield"></i></span>
                     <span class="item">Reports</span>
                 </a>
             </li>
             <!-- Tasks -->
             <li>
-                <a href="./tasks/index.php">
+                <a href="/thesis-mgmt/tasks/index.php">
                     <span class="icon"><i class="fas fa-tasks"></i></span>
                     <span class="item">Tasks</span>
                 </a>
