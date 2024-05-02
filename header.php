@@ -3,7 +3,8 @@ if (!isset($_SESSION))
 {
     session_start();
 }
-include (dirname(__FILE__) . "/dbconnect.php");
+
+include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 ?>
 
 <header class="p-3 d-flex justify-content-end">

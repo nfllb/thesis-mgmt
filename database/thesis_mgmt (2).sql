@@ -1133,3 +1133,20 @@ BEGIN
 END //
 
 DELIMITER ;
+
+/***********************************************/
+
+CREATE OR REPLACE VIEW `adviser_student_vw` AS
+SELECT `t`.`ThesisId` AS `ThesisId`,
+`t`.`School` AS `School`,
+`t`.`SchoolYear` AS `SchoolYear`,
+`u`.`Name` AS `Adviser`,
+concat(`s`.`FirstName`,' ',`s`.`MiddleName`,' ',`s`.`LastName`) AS `StudentName`,
+`t`.`DateOfFinalDefense` AS `DateOfFinalDefense` 
+FROM `thesis` `t` 
+left join `users` `u` 
+on `t`.`AdviserId` = `u`.`UserId`
+left join `thesisstudentmap` `tsm` 
+on `t`.`ThesisId` = `tsm`.`ThesisId` 
+left join `student` `s` 
+on `tsm`.`StudentId` = `s`.`StudentId`;

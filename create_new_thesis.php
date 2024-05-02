@@ -102,7 +102,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     <div class="form-group">
                         <div class="mb-3">
                             <label for="year" class="form-label thesis-text-color">School Year</label>
-                            <input type="number" name="year" class="form-control shadow" id="year">
+                            <input type="text" name="year" class="form-control shadow" id="year">
                         </div>
                     </div>
                     <div class="form-group">
