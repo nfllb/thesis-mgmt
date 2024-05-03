@@ -15,5 +15,8 @@ while ($row = mysqli_fetch_assoc($result))
 }
 
 // Output options
-echo '<select class="form-control" id="selectedThesis">' . $options . '</select>';
 ?>
+<select class="form-select" id="selectedThesis">
+    <option disabled selected>Select Thesis</option>
+    <?php echo $options; ?>
+</select>

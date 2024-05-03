@@ -93,7 +93,35 @@ if (in_array('Students_MultiLine_Underlined_Numbered', $variables))
     $templateProcessor->setComplexBlock('Students_MultiLine_Underlined_Numbered', $table);
 }
 
+if (in_array('Students_Table_Signature', $variables))
+{
+    // Create a table
+    $table = new \PhpOffice\PhpWord\Element\Table();
+    $tableHeader = $table->addRow();
 
+    $tableHeader->addCell(4000)->addText('Proponents (Name)', array('name' => 'Cambria', 'size' => 12, 'bold' => true));
+    $tableHeader->addCell(4000);
+    $tableHeader->addCell(4000)->addText('Signature', array('name' => 'Cambria', 'size' => 12, 'bold' => true));
+
+    // Split the string into an array
+    $valuesArray = explode(',', $thesis_students);
+
+    $counter = 1;
+    foreach ($valuesArray as $value)
+    {
+        // Add a row to the table
+        $tableRow = $table->addRow();
+
+        $tableRow->addCell(4000, array('borderBottomColor' => '000000', 'borderBottomSize' => 5, 'borderBottomStyle' => 'single'))->addText($value, array('name' => 'Cambria', 'size' => 12));
+        $tableRow->addCell(4000);
+        $tableRow->addCell(4000, array('borderBottomColor' => '000000', 'borderBottomSize' => 5, 'borderBottomStyle' => 'single'))->addText('', array('name' => 'Cambria', 'size' => 12));
+
+        $counter++;
+    }
+
+    // Replace the variable with the table
+    $templateProcessor->setComplexBlock('Students_Table_Signature', $table);
+}
 
 
 $templateProcessor->setValue('Course', $thesis_course);

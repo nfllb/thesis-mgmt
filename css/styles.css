@@ -228,6 +228,7 @@ div#thesisContainer.card.w-75.mb-3
 	color: rgb(241, 237, 237);
 	font-size: 12px;
 	position: relative;
+	text-decoration: none;
 }
 
 .wrapper .sidebar ul li a .icon {
@@ -262,6 +263,7 @@ div#thesisContainer.card.w-75.mb-3
 	color: #f07900;
 	background: white;
 	border-radius: 20px;
+	text-decoration: underline;
 }
 
 .wrapper .sidebar ul li a:hover .icon,

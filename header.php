@@ -18,6 +18,6 @@ include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
             </div>
         </div>
         <!-- Logout button -->
-        <a href="/thesis-mgmt/logout.php" id="logout" class="btn btn-sm btn-primary text-decoration-none">Logout</a>
+        <a href="/thesis-mgmt/logout.php" id="logout" class="btn btn-sm btn-danger text-decoration-none">Logout</a>
     </div>
 </header>

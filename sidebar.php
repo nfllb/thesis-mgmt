@@ -43,7 +43,7 @@
             </li>
             <!-- Forms -->
             <li>
-                <a href="#">
+                <a href="/thesis-mgmt/forms/index.php">
                     <span class="icon"><i class="fas fa-chart-line"></i></span>
                     <span class="item">Forms</span>
                 </a>
