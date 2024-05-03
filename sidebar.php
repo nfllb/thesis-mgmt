@@ -13,6 +13,13 @@
             </div>
             <br>
             <br>
+            <!-- New Thesis -->
+            <li>
+                <a href="/thesis-mgmt/create_new_thesis.php">
+                    <span class="icon"><i class="fas fa-book"></i></span>
+                    <span class="item">Create New Thesis</span>
+                </a>
+            </li>
             <!-- Dashboard -->
             <li>
                 <a href="#">

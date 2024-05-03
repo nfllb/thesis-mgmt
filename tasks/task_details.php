@@ -42,9 +42,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             <h3 style="position:absolute;margin-top:20px;">Task Details</h3>
             <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
             <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
-
             <hr>
-
             <?php
             $sql_WhereClause = " WHERE ThesisId = " . $thesisId;
             if ($_SESSION['role'] == 'Research Coordinator')
@@ -70,11 +68,60 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 $thesis_authors = $thesis["Authors"];
                 $thesis_adviser = $thesis["Adviser"];
                 $thesis_instructor = $thesis["Instructor"];
+
+                $getPanelists = "SELECT ThesisId, PanelMembers FROM thesispanelmembermap WHERE ThesisId = $thesisId";
+                $result_panel = $con->query($getPanelists);
+                if ($result_panel)
+                {
+                    $panelists_arr = $result_panel->fetch_assoc();
+                } else
+                {
+                    $panelists_arr = null;
+                }
                 ?>
             </div>
 
             <h3 style='margin-left:10px;color:#d2691e !important;'><?php echo $thesis_title; ?></h3>
+            <h6 class='thesis-text-color' style='margin-left:10px; display: flex; align-items: center;'>Panelists:
+                <?php
+                echo "<div class='view-mode'>";
+                if ($panelists_arr != null)
+                {
+                    $panelists = explode(";", $panelists_arr["PanelMembers"]);
+                    foreach ($panelists as $panelist)
+                    {
+                        echo "<span style='margin-left:3px; 'class='badge text-bg-secondary'>$panelist</span>";
+                    }
+                } else
+                {
+                    echo "<span style='margin-left:5px;' class='badge text-bg-secondary'>No panelists selected.</span>";
+                }
+                ?>
+                <button class='edit-button' onclick='openModal()'>
+                    <i class='fas fa-edit'></i>
+                </button>
+            </h6>
 
+            <!-- Modal -->
+            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Edit Panelists</h5>
+                            <span style="margin-left: 5px;" class="text-muted ml-2">Use ";" as separator</span>
+                            <button type="button" class="btn-close" data-bs-dismis="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea class="form-control" id="panelistTextarea"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="savePanelists()">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="accordion" id="accordionExample">
                 <div class="accordion-item">
@@ -846,6 +893,51 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     }
                 });
             });
+        </script>
+        <script>
+            function openModal() {
+                // Get panelist value and set it in the modal textarea
+                var panelistValue = '<?php if ($panelists_arr != null)
+                {
+                    echo implode("; ", $panelists);
+                } else
+                {
+                    echo "";
+                } ?>';
+                document.getElementById('panelistTextarea').value = panelistValue;
+                // Open the modal
+                $('#editModal').modal('show');
+            }
+
+            function savePanelists() {
+                // Get edited panelist value from textarea
+                var editedPanelists = document.getElementById('panelistTextarea').value;
+
+                var formData = new FormData();
+                formData.append('thesis_Id', <?php echo $thesisId; ?>);
+                formData.append('update_panel', true);
+                formData.append('panelists', editedPanelists);
+
+                $.ajax({
+                    type: "POST",
+                    url: "save_task.php",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "success") {
+                            window.location.reload();
+                        } else {
+                            $("<center class='text-danger'>" + data + "</center>").appendTo($("#errMsg2"));
+                        }
+                    }
+                });
+
+                // Close the modal
+                $('#editModal').modal('hide');
+            }
         </script>
 
     </body>

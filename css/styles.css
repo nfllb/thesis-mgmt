@@ -391,3 +391,23 @@ body.active .wrapper .section {
 	color: red !important;
 	font-weight: bolder;
 }
+
+.edit-button {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	padding: 5px 10px;
+	margin-left: 10px; /* Adjust as needed */
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	font-size: 12px;
+}
+
+.edit-button:hover {
+	background-color: #0056b3;
+}
+
+.edit-button i {
+	margin-right: 3px;
+}

@@ -167,3 +167,34 @@ if (isset($_POST['reject_step']))
     }
 
 }
+
+if (isset($_POST['update_panel']))
+{
+    $thesisId = $_POST['thesis_Id'];
+    $panelists = $_POST['panelists'];
+    $panelists = str_replace('; ', ';', $panelists);
+
+    $get_Panels = "SELECT ThesisId FROM thesispanelmembermap WHERE ThesisId = $thesisId";
+    $get_Panels_result = mysqli_query($con, $get_Panels);
+    if ($get_Panels_result && mysqli_num_rows($get_Panels_result) > 0)
+    {
+        $update_thesisPanelMap = "UPDATE thesispanelmembermap SET PanelMembers = '$panelists' WHERE ThesisId = $thesisId";
+    } else
+    {
+        $update_thesisPanelMap = "INSERT INTO `thesispanelmembermap` (`ThesisPanelMemberMap`, `ThesisId`, `PanelMembers`) VALUES (NULL, $thesisId, '$panelists')";
+    }
+
+    $update_thesisPanelMap_result = mysqli_query($con, $update_thesisPanelMap);
+
+    $update_thesis = "UPDATE thesis SET LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+    $update_thesis_result = mysqli_query($con, $update_thesis);
+    if ($update_thesis_result)
+    {
+        echo 'success';
+    } else
+    {
+        echo 'Sorry, there was an error saving to database. Please contact your research coordinator.';
+        ;
+    }
+    return;
+}
