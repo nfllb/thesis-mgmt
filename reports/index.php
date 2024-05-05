@@ -9,11 +9,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 	<html>
 
 	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Reports</title>
+
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-			integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
 		<style>
 			#logo {
@@ -26,30 +27,71 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 				justify-content: center;
 			}
 
+			/* Custom card styling */
 			.card {
-				display: flex;
-				flex-direction: column;
-				background-color: #f4ede8;
+				transition: transform 0.3s ease;
+				border: none;
+				background-color: #f2f1ee;
+				/* Lightened card background color */
+				border-radius: 10px;
+				/* Add border radius for rounded corners */
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+				/* Add a subtle shadow */
+				max-width: 300px;
+				/* Set maximum width to avoid stretching */
+				margin: 0 auto;
+				/* Center the card horizontally */
+			}
+
+			.card:hover {
+				transform: translateY(-5px);
 			}
 
 			.card-body {
-				flex-grow: 1;
+				padding: 1rem;
+			}
+
+			.card-text {
+				margin-bottom: 0;
+				/* Remove bottom margin for the file name */
+				color: #343a40;
+				/* Set text color for file name */
+				text-align: center;
+				/* Center the file name */
+			}
+
+			.card-footer {
+				padding: 0.75rem 1rem;
+				/* Add padding to the card footer */
+			}
+
+			.btn-primary {
+				background-color: #e89e67;
+				/* Orange button background color */
+				border-color: #e89e67;
+				/* Orange button border color */
+			}
+
+			.btn-primary:hover {
+				background-color: #d17d3a;
+				/* Darker shade of orange for hover background */
+				border-color: #d17d3a;
+				/* Darker shade of orange for hover border */
 			}
 		</style>
-		<title>Reports</title>
 	</head>
 
 	<body class="content">
-		<div>
+		<header>
 			<h3 style="position:absolute;margin-top:20px;">Reports</h3>
 			<?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
 			<?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
 			<hr>
-		</div>
+		</header>
 
 		<div class='container'>
 			<?php
-			$sqlGetFiles = "SELECT * FROM files";
+			$sqlGetFiles = "SELECT * FROM files WHERE Type = 'Report'";
 			$result = mysqli_query($con, $sqlGetFiles);
 
 			if (mysqli_num_rows($result) > 0)
@@ -62,18 +104,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 						$doc_code = $file['DocumentCode'];
 						?>
 						<div class="col">
-							<div class="card">
-								<div class="text-center">
-									<img id="logo" src="/thesis-mgmt/images/word_doc_logo.png" alt="logo">
-								</div>
+							<div class="card shadow">
 								<div class="card-body">
-									<p class="card-text" style="font-size: 13px;"><?php echo $fileName; ?></p>
+									<p class="card-text" style="font-size: 0.9rem;"><?php echo $fileName; ?></p>
+									<!-- Adjust font-size for the file name -->
+								</div>
+								<div class="card-footer d-flex justify-content-center">
 									<button id="gotoreport" value="<?php echo $doc_code; ?>" type="button"
 										class="btn btn-primary btn-sm"><?php echo $doc_code; ?></button>
 								</div>
 							</div>
 						</div>
-
 						<?php
 					}
 					echo "</div>";
@@ -86,12 +127,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 			</div>
 
 			<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-			<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-				integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-				crossorigin="anonymous"></script>
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-				integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-				crossorigin="anonymous"></script>
+			<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 
 			<script>
 				$(document).on('click', '#gotoreport', function (e) {

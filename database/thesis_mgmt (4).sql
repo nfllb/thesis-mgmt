@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 03, 2024 at 04:26 PM
+-- Generation Time: May 05, 2024 at 07:27 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -123,6 +123,8 @@ ON
     AND u.Role = 'Research Coordinator'
     WHERE a.Approver = 'Research Coordinator';
 
+	INSERT INTO `thesispanelmembermap` VALUES (NULL, last_thesis_id, '');
+    
     -- Check for errors
     IF NOT error_occurred THEN
         -- If no errors, commit the transaction
@@ -480,6 +482,22 @@ INSERT INTO `panelmember` (`PanelMemberId`, `FullName`, `CreatedDate`, `CreatedB
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `panel_student_vw`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `panel_student_vw`;
+CREATE TABLE `panel_student_vw` (
+`ThesisId` int(11)
+,`School` varchar(255)
+,`SchoolYear` varchar(255)
+,`PanelMember` varchar(500)
+,`StudentName` text
+,`DateOfFinalDefense` date
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `student`
 --
 
@@ -552,11 +570,12 @@ TRUNCATE TABLE `thesis`;
 --
 
 INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES
-(1, 'Thesis Management System', 7, 12, 'SAINT MARY’S UNIVERSITY', '2023-2024', '2024-04-15', 'System Admin', '2024-04-22', 'RC', '2024-05-03'),
-(2, 'My Test Thesis', 1, 13, 'SAINT MARY’S UNIVERSITY', '2023-2024', '2024-04-16', 'System Admin', '2024-04-22', 'RC', '2024-05-03'),
-(3, 'This thesis is for Instructor role', 8, 14, 'SAINT MARY’S UNIVERSITY', '2023-2024', '2024-04-27', 'System Admin', '2024-04-22', 'System Admin', '2024-04-25'),
-(6, 'Thesis Created By mySQL', 5, 15, 'SAINT MARY’S UNIVERSITY', '2023-2024', '2024-04-28', 'System Admin', '2024-04-28', 'System Admin', '2024-04-28'),
-(7, 'Created via tool', 9, 16, 'SAINT MARY’S UNIVERSITY', '2023-2024', '2024-05-11', 'Student Ten', '2024-04-28', 'Student Ten', '2024-04-28');
+(1, 'Thesis Management System', 7, 12, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-15', 'System Admin', '2024-04-22', 'Student One', '2024-05-06'),
+(2, 'My Test Thesis', 1, 13, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-16', 'System Admin', '2024-04-22', 'RC', '2024-05-04'),
+(3, 'This thesis is for Instructor role', 8, 14, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-27', 'System Admin', '2024-04-22', 'RC', '2024-05-05'),
+(6, 'Thesis Created By mySQL', 5, 15, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-28', 'System Admin', '2024-04-28', 'System Admin', '2024-04-28'),
+(7, 'Created via tool', 9, 16, 'SAINT MARY’S UNIVERSITY', '2024', '2024-05-11', 'Student Ten', '2024-04-28', 'Student Ten', '2024-04-28'),
+(8, 'Testing Only', 7, 6, 'SAINT MARY’S UNIVERSITY', '2023', '2024-05-15', 'RC', '2024-05-05', 'RC', '2024-05-05');
 
 -- --------------------------------------------------------
 
@@ -581,8 +600,10 @@ TRUNCATE TABLE `thesispanelmembermap`;
 --
 
 INSERT INTO `thesispanelmembermap` (`ThesisPanelMemberMap`, `ThesisId`, `PanelMembers`) VALUES
-(1, 1, 'Panel One;Panel Two;Panel Three;Four'),
-(3, 2, 'One;Two');
+(1, 1, 'Panel One;Panel Two;Four;One'),
+(3, 2, 'One;Two;Three'),
+(4, 3, ''),
+(5, 8, '');
 
 -- --------------------------------------------------------
 
@@ -621,7 +642,10 @@ INSERT INTO `thesisstudentmap` (`ThesisStudentMapId`, `ThesisId`, `StudentId`) V
 (13, 6, 5),
 (14, 7, 10),
 (15, 7, 11),
-(16, 7, 12);
+(16, 7, 12),
+(17, 8, 9),
+(18, 8, 5),
+(19, 8, 7);
 
 -- --------------------------------------------------------
 
@@ -648,8 +672,8 @@ TRUNCATE TABLE `thesis_checklist_approval_map`;
 --
 
 INSERT INTO `thesis_checklist_approval_map` (`ThesisChecklistApprovalId`, `ThesisId`, `CheckListId`, `ApproverId`, `Approved`) VALUES
-(1, 1, 6, 12, 0),
-(2, 1, 6, 7, 0),
+(1, 1, 6, 12, 1),
+(2, 1, 6, 7, 1),
 (3, 1, 8, 12, 0),
 (4, 3, 26, 14, 1),
 (5, 6, 6, 15, 1),
@@ -685,7 +709,24 @@ INSERT INTO `thesis_checklist_approval_map` (`ThesisChecklistApprovalId`, `Thesi
 (54, 7, 17, 34, 0),
 (55, 7, 19, 34, 0),
 (56, 7, 42, 34, 0),
-(57, 7, 69, 34, 0);
+(57, 7, 69, 34, 0),
+(58, 8, 6, 6, 0),
+(59, 8, 6, 11, 0),
+(60, 8, 8, 6, 0),
+(61, 8, 17, 6, 0),
+(62, 8, 26, 6, 0),
+(63, 8, 28, 6, 0),
+(64, 8, 42, 6, 0),
+(65, 8, 61, 6, 0),
+(66, 8, 63, 6, 0),
+(73, 8, 17, 3, 0),
+(74, 8, 19, 3, 0),
+(75, 8, 42, 3, 0),
+(76, 8, 69, 3, 0),
+(77, 8, 17, 34, 0),
+(78, 8, 19, 34, 0),
+(79, 8, 42, 34, 0),
+(80, 8, 69, 34, 0);
 
 -- --------------------------------------------------------
 
@@ -742,7 +783,8 @@ INSERT INTO `thesis_checklist_file_map` (`ThesisChecklistFileId`, `ThesisId`, `C
 (14, 1, 25, 'Chapter_3_Thesis_Management_System', './../uploads/Chapter_3_Thesis_Management_System.doc', 'Student One', '2024-04-26 18:06:02'),
 (15, 1, 27, 'Chapter_4_Thesis_Management_System', './../uploads/Chapter_4_Thesis_Management_System.docx', 'Student One', '2024-04-26 18:08:27'),
 (16, 6, 4, 'Chapter_3_Thesis_Created_By_mySQL', './../uploads/Chapter_3_Thesis_Created_By_mySQL.docx', 'Student Four', '2024-04-28 16:11:23'),
-(17, 6, 5, 'Chapter_3_Thesis_Created_By_mySQL', './../uploads/Chapter_3_Thesis_Created_By_mySQL.docx', 'Student Four', '2024-04-28 16:11:36');
+(17, 6, 5, 'Chapter_3_Thesis_Created_By_mySQL', './../uploads/Chapter_3_Thesis_Created_By_mySQL.docx', 'Student Four', '2024-04-28 16:11:36'),
+(18, 1, 7, 'Chapter_2_Thesis_Management_System', 'C:/xampp/htdocs/thesis-mgmt/uploads/Chapter_2_Thesis_Management_System.docx', 'Student One', '2024-05-04 20:37:20');
 
 -- --------------------------------------------------------
 
@@ -774,8 +816,8 @@ INSERT INTO `thesis_checklist_map` (`ThesisChecklistId`, `ThesisId`, `CheckListI
 (3, 1, 3, 0, 'Completed'),
 (4, 1, 4, 0, 'Completed'),
 (5, 1, 5, 0, 'Completed'),
-(6, 1, 6, 0, 'Not Started'),
-(7, 1, 7, 0, 'Not Started'),
+(6, 1, 6, 0, 'Completed'),
+(7, 1, 7, 0, 'Completed'),
 (8, 1, 8, 0, 'Not Started'),
 (9, 1, 9, 0, 'Not Started'),
 (10, 1, 10, 0, 'Not Started'),
@@ -1148,7 +1190,83 @@ INSERT INTO `thesis_checklist_map` (`ThesisChecklistId`, `ThesisId`, `CheckListI
 (471, 7, 73, 0, 'Not Started'),
 (472, 7, 74, 0, 'Not Started'),
 (473, 7, 75, 0, 'Not Started'),
-(474, 7, 76, 0, 'Not Started');
+(474, 7, 76, 0, 'Not Started'),
+(475, 8, 1, 0, 'Not Started'),
+(476, 8, 2, 0, 'Not Started'),
+(477, 8, 3, 0, 'Not Started'),
+(478, 8, 4, 0, 'Not Started'),
+(479, 8, 5, 0, 'Not Started'),
+(480, 8, 6, 0, 'Not Started'),
+(481, 8, 7, 0, 'Not Started'),
+(482, 8, 8, 0, 'Not Started'),
+(483, 8, 9, 0, 'Not Started'),
+(484, 8, 10, 0, 'Not Started'),
+(485, 8, 11, 0, 'Not Started'),
+(486, 8, 12, 0, 'Not Started'),
+(487, 8, 13, 0, 'Not Started'),
+(488, 8, 14, 0, 'Not Started'),
+(489, 8, 15, 0, 'Not Started'),
+(490, 8, 16, 0, 'Not Started'),
+(491, 8, 17, 0, 'Not Started'),
+(492, 8, 18, 0, 'Not Started'),
+(493, 8, 19, 0, 'Not Started'),
+(494, 8, 20, 0, 'Not Started'),
+(495, 8, 21, 0, 'Not Started'),
+(496, 8, 22, 0, 'Not Started'),
+(497, 8, 23, 0, 'Not Started'),
+(498, 8, 24, 0, 'Not Started'),
+(499, 8, 25, 0, 'Not Started'),
+(500, 8, 26, 0, 'Not Started'),
+(501, 8, 27, 0, 'Not Started'),
+(502, 8, 28, 0, 'Not Started'),
+(503, 8, 29, 0, 'Not Started'),
+(504, 8, 30, 0, 'Not Started'),
+(505, 8, 31, 0, 'Not Started'),
+(506, 8, 32, 0, 'Not Started'),
+(507, 8, 33, 0, 'Not Started'),
+(508, 8, 34, 0, 'Not Started'),
+(509, 8, 35, 0, 'Not Started'),
+(510, 8, 36, 0, 'Not Started'),
+(511, 8, 37, 0, 'Not Started'),
+(512, 8, 38, 0, 'Not Started'),
+(513, 8, 39, 0, 'Not Started'),
+(514, 8, 40, 0, 'Not Started'),
+(515, 8, 41, 0, 'Not Started'),
+(516, 8, 42, 0, 'Not Started'),
+(517, 8, 43, 0, 'Not Started'),
+(518, 8, 44, 0, 'Not Started'),
+(519, 8, 45, 0, 'Not Started'),
+(520, 8, 46, 0, 'Not Started'),
+(521, 8, 47, 0, 'Not Started'),
+(522, 8, 48, 0, 'Not Started'),
+(523, 8, 49, 0, 'Not Started'),
+(524, 8, 50, 0, 'Not Started'),
+(525, 8, 51, 0, 'Not Started'),
+(526, 8, 52, 0, 'Not Started'),
+(527, 8, 53, 0, 'Not Started'),
+(528, 8, 54, 0, 'Not Started'),
+(529, 8, 55, 0, 'Not Started'),
+(530, 8, 56, 0, 'Not Started'),
+(531, 8, 57, 0, 'Not Started'),
+(532, 8, 58, 0, 'Not Started'),
+(533, 8, 59, 0, 'Not Started'),
+(534, 8, 60, 0, 'Not Started'),
+(535, 8, 61, 0, 'Not Started'),
+(536, 8, 62, 0, 'Not Started'),
+(537, 8, 63, 0, 'Not Started'),
+(538, 8, 64, 0, 'Not Started'),
+(539, 8, 65, 0, 'Not Started'),
+(540, 8, 66, 0, 'Not Started'),
+(541, 8, 67, 0, 'Not Started'),
+(542, 8, 68, 0, 'Not Started'),
+(543, 8, 69, 0, 'Not Started'),
+(544, 8, 70, 0, 'Not Started'),
+(545, 8, 71, 0, 'Not Started'),
+(546, 8, 72, 0, 'Not Started'),
+(547, 8, 73, 0, 'Not Started'),
+(548, 8, 74, 0, 'Not Started'),
+(549, 8, 75, 0, 'Not Started'),
+(550, 8, 76, 0, 'Not Started');
 
 -- --------------------------------------------------------
 
@@ -1279,6 +1397,16 @@ DROP TABLE IF EXISTS `adviser_student_vw`;
 
 DROP VIEW IF EXISTS `adviser_student_vw`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `adviser_student_vw`  AS SELECT `t`.`ThesisId` AS `ThesisId`, `t`.`School` AS `School`, `t`.`SchoolYear` AS `SchoolYear`, `u`.`Name` AS `Adviser`, concat(`s`.`FirstName`,' ',`s`.`MiddleName`,' ',`s`.`LastName`) AS `StudentName`, `t`.`DateOfFinalDefense` AS `DateOfFinalDefense` FROM (((`thesis` `t` left join `users` `u` on(`t`.`AdviserId` = `u`.`UserId`)) left join `thesisstudentmap` `tsm` on(`t`.`ThesisId` = `tsm`.`ThesisId`)) left join `student` `s` on(`tsm`.`StudentId` = `s`.`StudentId`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `panel_student_vw`
+--
+DROP TABLE IF EXISTS `panel_student_vw`;
+
+DROP VIEW IF EXISTS `panel_student_vw`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `panel_student_vw`  AS SELECT `panel`.`ThesisId` AS `ThesisId`, `t`.`School` AS `School`, `t`.`SchoolYear` AS `SchoolYear`, `panel`.`PanelMember` AS `PanelMember`, concat(`s`.`FirstName`,' ',`s`.`MiddleName`,' ',`s`.`LastName`) AS `StudentName`, `t`.`DateOfFinalDefense` AS `DateOfFinalDefense` FROM ((((`thesispanelmembermap` `tpm` join (select `tpmm`.`ThesisId` AS `ThesisId`,substring_index(substring_index(`tpmm`.`PanelMembers`,';',`numbers`.`N`),';',-1) AS `PanelMember` from (`thesispanelmembermap` `tpmm` join (select 0 AS `N` union all select 1 AS `1` union all select 2 AS `2` union all select 3 AS `3` union all select 4 AS `4` union all select 5 AS `5` union all select 6 AS `6` union all select 7 AS `7` union all select 8 AS `8` union all select 9 AS `9`) `numbers` on(char_length(`tpmm`.`PanelMembers`) - char_length(replace(`tpmm`.`PanelMembers`,';','')) >= `numbers`.`N` - 1)) where `tpmm`.`PanelMembers` <> '') `panel` on(`tpm`.`ThesisId` = `panel`.`ThesisId` and `panel`.`PanelMember` <> '')) left join `thesis` `t` on(`panel`.`ThesisId` = `t`.`ThesisId`)) left join `thesisstudentmap` `tsm` on(`tsm`.`ThesisId` = `t`.`ThesisId`)) left join `student` `s` on(`s`.`StudentId` = `tsm`.`StudentId`)) ;
 
 -- --------------------------------------------------------
 
@@ -1471,25 +1599,25 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `thesis`
 --
 ALTER TABLE `thesis`
-  MODIFY `ThesisId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ThesisId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `thesispanelmembermap`
 --
 ALTER TABLE `thesispanelmembermap`
-  MODIFY `ThesisPanelMemberMap` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ThesisPanelMemberMap` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `thesisstudentmap`
 --
 ALTER TABLE `thesisstudentmap`
-  MODIFY `ThesisStudentMapId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `ThesisStudentMapId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `thesis_checklist_approval_map`
 --
 ALTER TABLE `thesis_checklist_approval_map`
-  MODIFY `ThesisChecklistApprovalId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `ThesisChecklistApprovalId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `thesis_checklist_editor_map`
@@ -1501,13 +1629,13 @@ ALTER TABLE `thesis_checklist_editor_map`
 -- AUTO_INCREMENT for table `thesis_checklist_file_map`
 --
 ALTER TABLE `thesis_checklist_file_map`
-  MODIFY `ThesisChecklistFileId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `ThesisChecklistFileId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `thesis_checklist_map`
 --
 ALTER TABLE `thesis_checklist_map`
-  MODIFY `ThesisChecklistId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=475;
+  MODIFY `ThesisChecklistId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=551;
 
 --
 -- AUTO_INCREMENT for table `users`
