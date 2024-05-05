@@ -52,7 +52,7 @@ if (isset($_POST['upload_file_step']))
 
     if ($action == 'Upload')
     {
-        $uploadDir = '/thesis-mgmt/uploads/';
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/thesis-mgmt/uploads/';
 
         // Allowed file types 
         $allowTypes = array('pdf', 'doc', 'docx', 'jpg', 'png', 'jpeg');

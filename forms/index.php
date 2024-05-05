@@ -21,21 +21,32 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                overflow: hidden;
             }
 
             th,
             td {
-                border: 1px solid #ddd;
-                padding: 8px;
+                border: 1px solid var(--primary-bg-color);
+                padding: 12px;
                 text-align: left;
             }
 
             th {
-                background-color: #f2f2f2;
+                background-color: #F4ECE3;
+                color: var(--primary-text-color);
+                font-weight: bold;
+                font-size: 14px !important;
+                text-align: center;
+            }
+
+            tr:nth-child(even) {
+                background-color: #F9F7F4;
             }
 
             tr:hover {
-                background-color: #f5f5f5;
+                background-color: #FCEBD1;
             }
 
             .file-link {
@@ -43,7 +54,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 text-decoration: underline;
             }
 
-            /* Custom styles for the input filter */
             .filter-input-container {
                 position: relative;
                 width: 250px;
@@ -53,10 +63,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
             .filter-input {
                 width: 100%;
-                padding: 3px;
-                /* Adjust right padding for icon */
+                padding: 8px;
                 border: 1px solid #ccc;
-                border-radius: 5px;
+                border-radius: 8px;
                 font-size: 13px;
                 outline: none;
                 transition: border-color 0.3s ease-in-out;
@@ -65,12 +74,11 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             .filter-icon {
                 position: absolute;
                 top: 50%;
-                right: 10px;
+                right: 12px;
                 transform: translateY(-50%);
                 font-size: 20px;
                 color: #999;
                 pointer-events: none;
-                /* Prevent icon from being clickable */
             }
 
             .filter-input:focus {
@@ -79,7 +87,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
             .modal-backdrop.show {
                 opacity: 0.5;
-                /* Adjust opacity as needed */
             }
         </style>
     </head>
@@ -104,7 +111,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     <th>File Name</th>
                     <th>File Type</th>
                     <th>File Size (Bytes)</th>
-                    <th>Generate</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -149,8 +156,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                         <div id="databaseOptions"></div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-sm btn-primary" onclick="generateDocument()">Generate
+                        <button id="closeModal" type="button" class="btn btn-sm btn-secondary"
+                            data-bs-dismiss="modal">Close</button>
+                        <button id="generateDoc" type="button" class="btn btn-sm btn-primary"
+                            onclick="generateDocument()">Generate
                             Document</button>
                     </div>
 
@@ -202,6 +211,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             function generateDocument() {
                 // Show loading icon
                 $('#loadingIcon').show();
+                $('#generateDoc').addClass('disabled');
+                $('#closeModal').addClass('disabled');
+
                 // Get the selected data from the form
 
                 var selectElement = document.getElementById("selectedThesis");
@@ -223,20 +235,23 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                         // Trigger download of the updated document
                         window.location.href = 'download-form.php?file=' + data;
 
-                        // Hide loading icon once download is initiated
-                        $('#loadingIcon').hide();
-
                         // Close the modal after a short delay (adjust as needed)
                         setTimeout(function () {
                             $('#exampleModal').modal('hide');
-                        }, 2000); // Close after 2 seconds
+                        }, 300); // Close after 2 seconds
 
+                        // Hide loading icon once download is initiated
+                        $('#loadingIcon').hide();
+                        $('#generateDoc').removeClass('disabled');
+                        $('#closeModal').removeClass('disabled');
 
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
                         // Hide loading icon once download is initiated
                         $('#loadingIcon').hide();
+                        $('#generateDoc').removeClass('disabled');
+                        $('#closeModal').removeClass('disabled');
                     }
                 });
             }

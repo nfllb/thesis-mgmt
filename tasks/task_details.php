@@ -85,7 +85,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             <h6 class='thesis-text-color' style='margin-left:10px; display: flex; align-items: center;'>Panelists:
                 <?php
                 echo "<div class='view-mode'>";
-                if ($panelists_arr != null)
+                if ($panelists_arr != null && $panelists_arr["PanelMembers"] != '')
                 {
                     $panelists = explode(";", $panelists_arr["PanelMembers"]);
                     foreach ($panelists as $panelist)
@@ -693,7 +693,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     cache: false,
                     processData: false,
                     success: function (data) {
-                        console.log(data);
                         if (data == "success") {
                             window.location.reload();
                         } else {
@@ -736,7 +735,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     cache: false,
                     processData: false,
                     success: function (data) {
-                        console.log(data);
                         if (data == "success") {
                             window.location.reload();
                         } else {
@@ -775,7 +773,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     cache: false,
                     processData: false,
                     success: function (data) {
-                        console.log(data);
                         if (data == "success") {
                             window.location.reload();
                         } else {
@@ -810,7 +807,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     cache: false,
                     processData: false,
                     success: function (data) {
-                        console.log(data);
                         if (data == "success") {
                             window.location.reload();
                         } else {
@@ -847,7 +843,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     cache: false,
                     processData: false,
                     success: function (data) {
-                        console.log(data);
                         if (data == "success") {
                             window.location.reload();
                         } else {
@@ -881,7 +876,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     cache: false,
                     processData: false,
                     success: function (data) {
-                        console.log(data);
                         if (data == "success") {
                             window.location.reload();
                         } else {
@@ -926,7 +920,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     cache: false,
                     processData: false,
                     success: function (data) {
-                        console.log(data);
                         if (data == "success") {
                             window.location.reload();
                         } else {

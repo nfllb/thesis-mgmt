@@ -1025,6 +1025,8 @@ ON
     AND u.Role = 'Research Coordinator'
     WHERE a.Approver = 'Research Coordinator';
 
+    INSERT INTO `thesispanelmembermap` VALUES (NULL, last_thesis_id, '');
+    
     -- Check for errors
     IF NOT error_occurred THEN
         -- If no errors, commit the transaction

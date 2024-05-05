@@ -1,10 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
+/* Define primary color variables */
+:root {
+	--primary-bg-color: #ecdfd7; /* Light background color */
+	--primary-text-color: #333; /* Dark text color */
+}
+
+/* Apply primary background color to the page */
 body {
 	font-family: Arial, Helvetica Neue, Helvetica,
 		sans-serif;
 	font-size: 13px;
-	background-color: #ecdfd7;
+	background-color: var(--primary-bg-color);
 }
 
 .form-label {
@@ -410,4 +417,28 @@ body.active .wrapper .section {
 
 .edit-button i {
 	margin-right: 3px;
+}
+
+/* Additional CSS for logout button design */
+.logout-btn {
+	background: linear-gradient(
+		135deg,
+		#ffb347,
+		#ffa933
+	);
+	border: none;
+	color: #fff;
+	padding: 10px 20px;
+	border-radius: 30px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	/* Add subtle shadow effect */
+	transition: transform 0.2s ease,
+		box-shadow 0.2s ease;
+}
+
+.logout-btn:hover {
+	transform: scale(1.05);
+	/* Add a slight scale effect on hover */
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	/* Enhance shadow on hover */
 }
