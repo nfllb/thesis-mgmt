@@ -32,20 +32,28 @@ if (empty($username))
     {
         // the user name must be unique
         $row = mysqli_fetch_assoc($result);
-        if ($row['Password'] === $password && $row['UserName'] == $username)
-        {
-            $_SESSION['name'] = $row['Name'];
-            $_SESSION['userid'] = $row['UserId'];
-            $_SESSION['role'] = $row['Role'];
-            $_SESSION['username'] = $row['UserName'];
-            header("Location: /thesis-mgmt/index.php");
 
+        if ($row['Status'] == 'Active')
+        {
+            if ($row['Password'] === $password && $row['UserName'] == $username)
+            {
+                $_SESSION['name'] = $row['Name'];
+                $_SESSION['userid'] = $row['UserId'];
+                $_SESSION['role'] = $row['Role'];
+                $_SESSION['username'] = $row['UserName'];
+                header("Location: /thesis-mgmt/index.php");
+
+            } else
+            {
+                header("Location: /thesis-mgmt/login.php?error=Incorrect username or password.");
+            }
         } else
         {
-            header("Location: /thesis-mgmt/login.php?error=Incorect User name or password");
+            header("Location: /thesis-mgmt/login.php?error=The user is currently inactive. Please reach out to your Research Coordinator for assistance.");
         }
+
     } else
     {
-        header("Location: /thesis-mgmt/login.php?error=Incorect User name or password");
+        header("Location: /thesis-mgmt/login.php?error=Incorrect username or password.");
     }
 }

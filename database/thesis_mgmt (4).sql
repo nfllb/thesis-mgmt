@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 05, 2024 at 07:27 PM
+-- Generation Time: May 06, 2024 at 02:59 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -1330,6 +1330,22 @@ CREATE TABLE `thesis_student_adviser_vw` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `thesis_student_panel_vw`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `thesis_student_panel_vw`;
+CREATE TABLE `thesis_student_panel_vw` (
+`ThesisId` int(11)
+,`Title` varchar(1000)
+,`UserId` int(11)
+,`StudentName` varchar(511)
+,`Adviser` varchar(255)
+,`PanelMembers` varchar(500)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -1342,7 +1358,8 @@ CREATE TABLE `users` (
   `Password` varchar(255) NOT NULL,
   `Email` varchar(255) NOT NULL,
   `SecurityQuestion` varchar(255) NOT NULL,
-  `SecurityAnswer` varchar(255) NOT NULL
+  `SecurityAnswer` varchar(255) NOT NULL,
+  `Status` enum('Active','Inactive','','') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -1354,39 +1371,39 @@ TRUNCATE TABLE `users`;
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`UserId`, `Role`, `Name`, `UserName`, `Password`, `Email`, `SecurityQuestion`, `SecurityAnswer`) VALUES
-(1, 'Adviser', 'Adviser Two', 'adviser.two', 'c4ca4238a0b923820dcc509a6f75849b', 'nelbuen@test.com', 'What elementary school did you attend?', 'hilo'),
-(3, 'Research Coordinator', 'RC', 'rc', 'c4ca4238a0b923820dcc509a6f75849b', 'rc@testing.com', 'What elementary school did you attend?', 'tes'),
-(4, 'Dean', 'Dean', 'deanto', 'c4ca4238a0b923820dcc509a6f75849b', 'dean@testing.com', 'What elementary school did you attend?', 'mes'),
-(5, 'Adviser', 'Adviser Four', 'adviser.4', 'c4ca4238a0b923820dcc509a6f75849b', 'test.adviser@testing.com', 'What elementary school did you attend?', 'mes'),
-(6, 'Instructor', 'Instructor Seven', 'instructor.seven', 'c4ca4238a0b923820dcc509a6f75849b', 'test.instructor@testing.com', 'What elementary school did you attend?', 'mes'),
-(7, 'Adviser', 'Adviser One', 'adviser.one', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(8, 'Adviser', 'Adviser Three', 'adviser.three', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(9, 'Adviser', 'Adviser Five', 'adviser.five', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(10, 'Adviser', 'Adviser Six', 'adviser.six', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(11, 'Adviser', 'Adviser Seven', 'adviser.seven', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(12, 'Instructor', 'Instructor One', 'instructor.one', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(13, 'Instructor', 'Instructor Two', 'instructor.two', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(14, 'Instructor', 'Instructor Three', 'instructor.three', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(15, 'Instructor', 'Instructor Four', 'instructor.four', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(16, 'Instructor', 'Instructor Five', 'instructor.five', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(17, 'Instructor', 'Instructor Six', 'instructor.six', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes'),
-(18, 'Student', 'Student One', 'student.1', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(19, 'Student', 'Student Two', 'student.2', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(20, 'Student', 'Student Three', 'student.3', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(21, 'Student', 'Student Four', 'student.4', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(22, 'Student', 'Student Five', 'student.5', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(23, 'Student', 'Student Six', 'student.6', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(24, 'Student', 'Student Seven', 'student.7', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(25, 'Student', 'Student Eight', 'student.8', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(26, 'Student', 'Student Nine', 'student.9', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(33, 'Student', 'Student Ten', 'student.10', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes'),
-(34, 'Research Coordinator', 'Ri Coordinator', 'ri.coor', 'c4ca4238a0b923820dcc509a6f75849b', 'rc@testing.com', 'What elementary school did you attend?', 'mes'),
-(35, 'Student', 'Student Eleven', 'student.11', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(36, 'Student', 'Student Twelve', 'student.12', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes'),
-(37, 'Dean', 'Dean One', 'dean.1', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes'),
-(39, 'Dean', 'Dean Two', 'dean.2', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes'),
-(52, 'Student', 'Student Thirteen', 'student.13', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes');
+INSERT INTO `users` (`UserId`, `Role`, `Name`, `UserName`, `Password`, `Email`, `SecurityQuestion`, `SecurityAnswer`, `Status`) VALUES
+(1, 'Adviser', 'Adviser Two', 'adviser.two', 'c4ca4238a0b923820dcc509a6f75849b', 'nelbuen@test.com', 'What elementary school did you attend?', 'hilo', 'Inactive'),
+(3, 'Research Coordinator', 'RC', 'rc', 'c4ca4238a0b923820dcc509a6f75849b', 'rc@testing.com', 'What elementary school did you attend?', 'tes', 'Active'),
+(4, 'Dean', 'Dean', 'deanto', 'c4ca4238a0b923820dcc509a6f75849b', 'dean@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(5, 'Adviser', 'Adviser Four', 'adviser.4', 'c4ca4238a0b923820dcc509a6f75849b', 'test.adviser@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(6, 'Instructor', 'Instructor Seven', 'instructor.seven', 'c4ca4238a0b923820dcc509a6f75849b', 'test.instructor@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(7, 'Adviser', 'Adviser One', 'adviser.one', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(8, 'Adviser', 'Adviser Three', 'adviser.three', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(9, 'Adviser', 'Adviser Five', 'adviser.five', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Inactive'),
+(10, 'Adviser', 'Adviser Six', 'adviser.six', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(11, 'Adviser', 'Adviser Seven', 'adviser.seven', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(12, 'Instructor', 'Instructor One', 'instructor.one', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(13, 'Instructor', 'Instructor Two', 'instructor.two', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(14, 'Instructor', 'Instructor Three', 'instructor.three', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(15, 'Instructor', 'Instructor Four', 'instructor.four', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(16, 'Instructor', 'Instructor Five', 'instructor.five', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(17, 'Instructor', 'Instructor Six', 'instructor.six', 'c4ca4238a0b923820dcc509a6f75849b', 'test@test.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(18, 'Student', 'Student One', 'student.1', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(19, 'Student', 'Student Two', 'student.2', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(20, 'Student', 'Student Three', 'student.3', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(21, 'Student', 'Student Four', 'student.4', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(22, 'Student', 'Student Five', 'student.5', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(23, 'Student', 'Student Six', 'student.6', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(24, 'Student', 'Student Seven', 'student.7', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(25, 'Student', 'Student Eight', 'student.8', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(26, 'Student', 'Student Nine', 'student.9', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(33, 'Student', 'Student Ten', 'student.10', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(34, 'Research Coordinator', 'Ri Coordinator', 'ri.coor', 'c4ca4238a0b923820dcc509a6f75849b', 'rc@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(35, 'Student', 'Student Eleven', 'student.11', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(36, 'Student', 'Student Twelve', 'student.12', 'c4ca4238a0b923820dcc509a6f75849b', 'testing@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(37, 'Dean', 'Dean One', 'dean.1', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(39, 'Dean', 'Dean Two', 'dean.2', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes', 'Active'),
+(52, 'Student', 'Student Thirteen', 'student.13', 'c4ca4238a0b923820dcc509a6f75849b', 'test@testing.com', 'What elementary school did you attend?', 'mes', 'Active');
 
 -- --------------------------------------------------------
 
@@ -1437,6 +1454,16 @@ DROP TABLE IF EXISTS `thesis_student_adviser_vw`;
 
 DROP VIEW IF EXISTS `thesis_student_adviser_vw`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `thesis_student_adviser_vw`  AS SELECT `t`.`Title` AS `Title`, concat(`s`.`FirstName`,' ',`s`.`MiddleName`,' ',`s`.`LastName`) AS `StudentName`, `s`.`Course` AS `Course`, `a`.`Name` AS `Adviser`, `t`.`DateOfFinalDefense` AS `DateOfFinalDefense` FROM (((`thesis` `t` left join `thesisstudentmap` `tsm` on(`t`.`ThesisId` = `tsm`.`ThesisId`)) left join `student` `s` on(`tsm`.`StudentId` = `s`.`StudentId`)) left join `users` `a` on(`t`.`AdviserId` = `a`.`UserId`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `thesis_student_panel_vw`
+--
+DROP TABLE IF EXISTS `thesis_student_panel_vw`;
+
+DROP VIEW IF EXISTS `thesis_student_panel_vw`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `thesis_student_panel_vw`  AS SELECT `t`.`ThesisId` AS `ThesisId`, `t`.`Title` AS `Title`, `s`.`UserId` AS `UserId`, concat(`s`.`FirstName`,' ',`s`.`LastName`) AS `StudentName`, `u`.`Name` AS `Adviser`, `tpmm`.`PanelMembers` AS `PanelMembers` FROM ((((`thesis` `t` left join `thesisstudentmap` `tsm` on(`t`.`ThesisId` = `tsm`.`ThesisId`)) left join `student` `s` on(`tsm`.`StudentId` = `s`.`StudentId`)) left join `users` `u` on(`u`.`UserId` = `t`.`AdviserId`)) left join `thesispanelmembermap` `tpmm` on(`tpmm`.`ThesisId` = `t`.`ThesisId`)) ;
 
 --
 -- Indexes for dumped tables

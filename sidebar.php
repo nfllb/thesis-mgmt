@@ -43,7 +43,7 @@
             </li>
             <!-- Users -->
             <li>
-                <a href="#">
+                <a href="/thesis-mgmt/users/index.php">
                     <span class="icon"><i class="fa-solid fa-users"></i></span>
                     <span class="item">Users</span>
                 </a>
