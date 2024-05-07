@@ -48,7 +48,6 @@
         }
 
         .add-user-btn {
-            background-color: #007bff;
             border: none;
             color: white;
             padding: 8px 12px;
@@ -61,10 +60,6 @@
             margin-right: 5px;
         }
 
-        .add-user-btn:hover {
-            background-color: #0056b3;
-        }
-
         .container {
             width: 80%;
             margin: 20px auto;
@@ -74,12 +69,14 @@
         .btn-container {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: end;
             margin-bottom: 20px;
         }
 
         .btn-container button {
             margin-right: 10px;
+            margin-top: 10px;
+            margin-left: 5px;
         }
 
         .filter-container {
@@ -116,10 +113,8 @@
 
         .edit-btn,
         .save-btn {
-            /* background-color: #4CAF50; */
             border: none;
             color: white;
-            padding: 8px 12px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
@@ -127,19 +122,6 @@
             border-radius: 4px;
             cursor: pointer;
             margin-right: 5px;
-        }
-
-        .edit-btn:hover,
-        .save-btn:hover {
-            /* background-color: #45a049; */
-        }
-
-        .edit-btn {
-            /* background-color: #007bff; */
-        }
-
-        .edit-btn:hover {
-            /* background-color: #0056b3; */
         }
     </style>
 </head>
@@ -197,10 +179,11 @@
 
     <div class="container">
         <div class="btn-container">
-            <button class="add-user-btn" onclick="window.location.href = '/thesis-mgmt/signup.php';">Add User</button>
             <div class="filter-container">
-                <input type="text" id="filterInput" placeholder="Search for usernames...">
+                <input type="text" id="filterInput" placeholder="Search user...">
             </div>
+            <button class="add-user-btn btn btn-sm btn-primary"
+                onclick="window.location.href = '/thesis-mgmt/signup.php';">Add User</button>
         </div>
         <?php
         // If form is submitted, update user data in database
@@ -290,8 +273,8 @@
             var filterValue = this.value.toUpperCase();
             var table = document.querySelector("table");
             var rows = table.getElementsByTagName("tr");
-            for (var i = 1; i < rows.length; i++) { // Start from 1 to skip header row
-                var cells = rows[i].getElementsByTagName("td")[1]; // Filter based on the second column (Username)
+            for (var i = 1; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td")[1];
                 if (cells) {
                     var username = cells.textContent || cells.innerText;
                     if (username.toUpperCase().indexOf(filterValue) > -1) {

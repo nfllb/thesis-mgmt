@@ -20,7 +20,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <?php
         if ($_SESSION['role'] != 'Student')
         {
-            header("Location: /thesis-mgmt/dashboard.php");
+            header("Location: /thesis-mgmt/dashboard/index.php");
         } else
         {
             $sql_Select = "SELECT * FROM thesis_groupedstudents_vw" . " WHERE Authors LIKE '%" . $_SESSION['name'] . "%'";
@@ -31,7 +31,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 header("Location: /thesis-mgmt/create_new_thesis.php");
             } else
             {
-                header("Location: /thesis-mgmt/dashboard.php");
+                header("Location: /thesis-mgmt/dashboard/index.php");
             }
         }
         ?>

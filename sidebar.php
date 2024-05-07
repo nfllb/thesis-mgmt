@@ -22,7 +22,7 @@
             </li>
             <!-- Dashboard -->
             <li>
-                <a href="#">
+                <a href="/thesis-mgmt/dashboard/index.php">
                     <span class="icon"><i class="fas fa-desktop"></i></span>
                     <span class="item">Dashboard</span>
                 </a>
@@ -32,13 +32,6 @@
                 <a href="/thesis-mgmt/thesis/index.php">
                     <span class="icon"><i class="fas fa-user-friends"></i></span>
                     <span class="item">Thesis</span>
-                </a>
-            </li>
-            <!-- Itinerary -->
-            <li>
-                <a href="#">
-                    <span class="icon"><i class="fa-solid fa-clock"></i></span>
-                    <span class="item">Itinerary</span>
                 </a>
             </li>
             <!-- Users -->
