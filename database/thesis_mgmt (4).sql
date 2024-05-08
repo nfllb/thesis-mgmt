@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 06, 2024 at 02:59 PM
+-- Generation Time: May 08, 2024 at 05:25 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -60,8 +60,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateNewThesis` (IN `title` VARCHA
     START TRANSACTION;
 
     /* Insert into thesis table */
-    INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES 
-    (NULL, title, adviser, instructor, 'SAINT MARY’S UNIVERSITY', school_year, dateofdefense, createdby, current_timestamp(), createdby, current_timestamp());
+    INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `Status`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES 
+    (NULL, title, adviser, instructor, 'SAINT MARY’S UNIVERSITY', school_year, dateofdefense, 'Not Started', createdby, current_timestamp(), createdby, current_timestamp());
 
     SELECT LAST_INSERT_ID() INTO last_thesis_id;
     
@@ -179,6 +179,67 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateNewUser` (IN `_role` VARCHAR(
         -- If an error occurred, rollback the transaction
         ROLLBACK;
     END IF;
+END$$
+
+DROP PROCEDURE IF EXISTS `getDashboardDetails`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getDashboardDetails` (IN `course` VARCHAR(255), IN `department` VARCHAR(255))   BEGIN
+  select (select count( distinct `t`.`ThesisId`) AS `totalDepartment` 
+          from ((`thesis_mgmt`.`thesis` `t` 
+          left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+          on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+          left join `thesis_mgmt`.`student` `s` 
+          on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+          where `s`.`Department` = department) AS `totalDepartment`,
+
+          IF(course = 'All', 
+            (select count( distinct `t`.`ThesisId`) AS `totalCourse` 
+            from ((`thesis_mgmt`.`thesis` `t` 
+            left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+            on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+            left join `thesis_mgmt`.`student` `s` 
+            on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+            where `s`.`Department` = department),
+
+            (select count( distinct `t`.`ThesisId`) AS `totalCourse` 
+            from ((`thesis_mgmt`.`thesis` `t` 
+            left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+            on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+            left join `thesis_mgmt`.`student` `s` 
+            on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+            where `s`.`Department` = department 
+            and `s`.`Course` = course) ) AS `totalCourse`,
+          
+          IF(course = 'All', 
+          (SELECT COUNT(DISTINCT ThesisId)
+          FROM thesis_checklist_map
+          WHERE Status != 'Not Started'
+          AND ThesisId IN ( select t.ThesisId
+                            from ((`thesis_mgmt`.`thesis` `t` 
+                                  left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+                                  on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+                                  left join `thesis_mgmt`.`student` `s` 
+                                  on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+                            where `s`.`Department` = department)
+          
+          ),
+          
+          (SELECT COUNT(DISTINCT ThesisId)
+          FROM thesis_checklist_map
+          WHERE Status != 'Not Started'
+          AND ThesisId IN ( select t.ThesisId
+                            from ((`thesis_mgmt`.`thesis` `t` 
+                                  left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+                                  on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+                                  left join `thesis_mgmt`.`student` `s` 
+                                  on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+                            where `s`.`Department` = department 
+                            and `s`.`Course` = course)
+          
+          )) AS `pendingDefense`,
+          
+          (select count( distinct `thesis_mgmt`.`users`.`UserId`) AS `activeUser` 
+          from `thesis_mgmt`.`users` 
+          where `thesis_mgmt`.`users`.`Status` = 'Active') AS `activeUser`;
 END$$
 
 DROP PROCEDURE IF EXISTS `SplitAndInsertArrayString`$$
@@ -352,7 +413,7 @@ INSERT INTO `checklist` (`CheckListId`, `Part`, `StepNumber`, `TaskName`, `TaskN
 (73, 2, 49, 'Verification of submitted CDs, Updating of checklist', 'N/A', 'Research Coordinator', 'Manual'),
 (74, 2, 50, 'Submission of working hardware prototypes (BSCpE, BSECE, BSEE)', 'Working_Hardware_Prototype', 'Researchers', 'Upload'),
 (75, 2, 51, 'Submission of system installation package (BSIT)', 'System_Installation_Package', 'Researchers', 'Upload'),
-(76, 2, 52, 'END OF THESIS 2 CAPSTONE 2', '', '', 'Manual');
+(76, 2, 52, 'END OF THESIS 2 CAPSTONE 2', '', 'Research Coordinator', 'Manual');
 
 -- --------------------------------------------------------
 
@@ -452,6 +513,35 @@ INSERT INTO `files` (`fileid`, `DocumentCode`, `filename`, `filepath`, `Type`, `
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `getdashboardgauge`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `getdashboardgauge`;
+CREATE TABLE `getdashboardgauge` (
+`Part` int(11)
+,`Completed` decimal(26,2)
+,`InProgress` decimal(26,2)
+,`NotStarted` decimal(26,2)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `getdashboardtable`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `getdashboardtable`;
+CREATE TABLE `getdashboardtable` (
+`Title` varchar(1000)
+,`Name` varchar(255)
+,`LastModifiedDate` date
+,`Status` enum('Not Started','In Progress','Completed','')
+,`Percent` decimal(24,0)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `panelmember`
 --
 
@@ -526,17 +616,17 @@ TRUNCATE TABLE `student`;
 
 INSERT INTO `student` (`StudentId`, `UserId`, `FirstName`, `MiddleName`, `LastName`, `Course`, `Department`, `Year`, `CreatedDate`, `CreatedBy`) VALUES
 (1, 18, 'Student', '', 'One', 'Computer Engineering', 'Engineering', 'Fourth', '2024-04-08 10:02:23', 'AdminUser'),
-(2, 19, 'Student', '', 'Two', 'COE', 'Engineering', 'Fourth', '2024-04-08 10:02:23', 'AdminUser'),
+(2, 19, 'Student', '', 'Two', 'Computer Engineering', 'Engineering', 'Fourth', '2024-04-08 10:02:23', 'AdminUser'),
 (3, 20, 'Student', '', 'Three', 'Computer Engineering', 'Engineering', 'Fourth', '2024-04-08 10:03:38', 'AdminUser'),
-(4, 21, 'Student', '', 'Four', 'COE', 'Engineering', 'Fourth', '2024-04-08 10:03:38', 'AdminUser'),
-(5, 22, 'Student', '', 'Five', 'Computer Engineering', 'Engineering', 'Fourth', '2024-04-08 10:04:15', 'AdminUser'),
-(6, 23, 'Student', '', 'Six', 'COE', 'Engineering', 'Fourth', '2024-04-08 10:04:15', 'AdminUser'),
-(7, 24, 'Student', '', 'Seven', 'COE', 'Engineering', 'Fourth', '2024-04-17 19:33:14', 'AdminUser'),
-(8, 25, 'Student', '', 'Eight', 'COE', 'Engineering', 'Fourth', '2024-04-17 19:33:14', 'AdminUser'),
-(9, 26, 'Student', '', 'Nine', 'COE', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
-(10, 33, 'Student', '', 'Ten', 'COE', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
-(11, 35, 'Student', '', 'Eleven', 'COE', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
-(12, 36, 'Student', '', 'Twelve', 'COE', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
+(4, 21, 'Student', '', 'Four', 'Architecture', 'Engineering', 'Fourth', '2024-04-08 10:03:38', 'AdminUser'),
+(5, 22, 'Student', '', 'Five', 'Architecture', 'Engineering', 'Fourth', '2024-04-08 10:04:15', 'AdminUser'),
+(6, 23, 'Student', '', 'Six', 'Architecture', 'Engineering', 'Fourth', '2024-04-08 10:04:15', 'AdminUser'),
+(7, 24, 'Student', '', 'Seven', 'Civil Engineering', 'Engineering', 'Fourth', '2024-04-17 19:33:14', 'AdminUser'),
+(8, 25, 'Student', '', 'Eight', 'Civil Engineering', 'Engineering', 'Fourth', '2024-04-17 19:33:14', 'AdminUser'),
+(9, 26, 'Student', '', 'Nine', 'Civil Engineering', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
+(10, 33, 'Student', '', 'Ten', 'Computer Engineering', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
+(11, 35, 'Student', '', 'Eleven', 'Computer Engineering', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
+(12, 36, 'Student', '', 'Twelve', 'Computer Engineering', 'Engineering', 'Fourth', '2024-04-17 19:33:48', 'AdminUser'),
 (13, 52, 'Student', '', 'Thirteen', 'Electronics Engineering', 'engineering', 'Fifth', '2024-04-28 23:04:29', 'Student Thirteen');
 
 -- --------------------------------------------------------
@@ -554,6 +644,7 @@ CREATE TABLE `thesis` (
   `School` varchar(255) NOT NULL DEFAULT 'SAINT MARY’S UNIVERSITY',
   `SchoolYear` varchar(255) NOT NULL,
   `DateOfFinalDefense` date DEFAULT NULL,
+  `Status` enum('Not Started','In Progress','Completed','') DEFAULT 'Not Started',
   `CreatedBy` varchar(255) NOT NULL DEFAULT 'System Admin',
   `CreatedDate` date NOT NULL DEFAULT current_timestamp(),
   `LastModifiedBy` varchar(255) NOT NULL DEFAULT 'System Admin',
@@ -569,13 +660,13 @@ TRUNCATE TABLE `thesis`;
 -- Dumping data for table `thesis`
 --
 
-INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES
-(1, 'Thesis Management System', 7, 12, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-15', 'System Admin', '2024-04-22', 'Student One', '2024-05-06'),
-(2, 'My Test Thesis', 1, 13, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-16', 'System Admin', '2024-04-22', 'RC', '2024-05-04'),
-(3, 'This thesis is for Instructor role', 8, 14, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-27', 'System Admin', '2024-04-22', 'RC', '2024-05-05'),
-(6, 'Thesis Created By mySQL', 5, 15, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-28', 'System Admin', '2024-04-28', 'System Admin', '2024-04-28'),
-(7, 'Created via tool', 9, 16, 'SAINT MARY’S UNIVERSITY', '2024', '2024-05-11', 'Student Ten', '2024-04-28', 'Student Ten', '2024-04-28'),
-(8, 'Testing Only', 7, 6, 'SAINT MARY’S UNIVERSITY', '2023', '2024-05-15', 'RC', '2024-05-05', 'RC', '2024-05-05');
+INSERT INTO `thesis` (`ThesisId`, `Title`, `AdviserId`, `InstructorId`, `School`, `SchoolYear`, `DateOfFinalDefense`, `Status`, `CreatedBy`, `CreatedDate`, `LastModifiedBy`, `LastModifiedDate`) VALUES
+(1, 'Thesis Management System', 7, 12, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-15', 'In Progress', 'System Admin', '2024-04-22', 'Student One', '2024-05-06'),
+(2, 'My Test Thesis', 1, 13, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-16', 'Not Started', 'System Admin', '2024-04-22', 'RC', '2024-05-04'),
+(3, 'This thesis is for Instructor role', 8, 14, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-27', 'In Progress', 'System Admin', '2024-04-22', 'RC', '2024-05-05'),
+(6, 'Thesis Created By mySQL', 5, 15, 'SAINT MARY’S UNIVERSITY', '2024', '2024-04-28', 'In Progress', 'System Admin', '2024-04-28', 'System Admin', '2024-04-28'),
+(7, 'Created via tool', 9, 16, 'SAINT MARY’S UNIVERSITY', '2024', '2024-05-11', 'Completed', 'Student Ten', '2024-04-28', 'RC', '2024-05-08'),
+(8, 'Testing Only', 7, 6, 'SAINT MARY’S UNIVERSITY', '2023', '2024-05-15', 'Not Started', 'RC', '2024-05-05', 'RC', '2024-05-05');
 
 -- --------------------------------------------------------
 
@@ -1189,8 +1280,8 @@ INSERT INTO `thesis_checklist_map` (`ThesisChecklistId`, `ThesisId`, `CheckListI
 (470, 7, 72, 0, 'Not Started'),
 (471, 7, 73, 0, 'Not Started'),
 (472, 7, 74, 0, 'Not Started'),
-(473, 7, 75, 0, 'Not Started'),
-(474, 7, 76, 0, 'Not Started'),
+(473, 7, 75, 0, 'Completed'),
+(474, 7, 76, 0, 'Completed'),
 (475, 8, 1, 0, 'Not Started'),
 (476, 8, 2, 0, 'Not Started'),
 (477, 8, 3, 0, 'Not Started'),
@@ -1289,6 +1380,20 @@ CREATE TABLE `thesis_checklist_vw` (
 ,`UploadedFileName` text
 ,`Assignee` varchar(255)
 ,`Action` enum('Manual','Upload','Approval','Select')
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `thesis_dashboard_details`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `thesis_dashboard_details`;
+CREATE TABLE `thesis_dashboard_details` (
+`totalDepartment` bigint(21)
+,`totalCourse` bigint(21)
+,`pendingDefense` int(2)
+,`activeUser` bigint(21)
 );
 
 -- --------------------------------------------------------
@@ -1418,6 +1523,26 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- --------------------------------------------------------
 
 --
+-- Structure for view `getdashboardgauge`
+--
+DROP TABLE IF EXISTS `getdashboardgauge`;
+
+DROP VIEW IF EXISTS `getdashboardgauge`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `getdashboardgauge`  AS SELECT `c`.`Part` AS `Part`, round(count(distinct `comp`.`ThesisChecklistId`) / count(distinct `total`.`ThesisChecklistId`) * 100,2) AS `Completed`, round(count(distinct `inprog`.`ThesisChecklistId`) / count(distinct `total`.`ThesisChecklistId`) * 100,2) AS `InProgress`, round(count(distinct `notstarted`.`ThesisChecklistId`) / count(distinct `total`.`ThesisChecklistId`) * 100,2) AS `NotStarted` FROM ((((`checklist` `c` left join `thesis_checklist_map` `total` on(`c`.`CheckListId` = `total`.`CheckListId`)) left join `thesis_checklist_map` `comp` on(`c`.`CheckListId` = `comp`.`CheckListId` and `comp`.`Status` = 'Completed')) left join `thesis_checklist_map` `inprog` on(`c`.`CheckListId` = `inprog`.`CheckListId` and `inprog`.`Status` = 'In Progress')) left join `thesis_checklist_map` `notstarted` on(`c`.`CheckListId` = `notstarted`.`CheckListId` and `notstarted`.`Status` = 'Not Started')) GROUP BY `c`.`Part` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `getdashboardtable`
+--
+DROP TABLE IF EXISTS `getdashboardtable`;
+
+DROP VIEW IF EXISTS `getdashboardtable`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `getdashboardtable`  AS SELECT `t`.`Title` AS `Title`, `u`.`Name` AS `Name`, `t`.`LastModifiedDate` AS `LastModifiedDate`, `t`.`Status` AS `Status`, ifnull(round(`comp`.`Count` / `total`.`Count` * 100,0),0) AS `Percent` FROM (((`thesis` `t` left join `users` `u` on(`t`.`InstructorId` = `u`.`UserId`)) left join (select `thesis_checklist_map`.`ThesisId` AS `ThesisId`,count(`thesis_checklist_map`.`ThesisChecklistId`) AS `Count` from `thesis_checklist_map` where `thesis_checklist_map`.`Status` = 'Completed' group by `thesis_checklist_map`.`ThesisId`) `comp` on(`t`.`ThesisId` = `comp`.`ThesisId`)) left join (select `thesis_checklist_map`.`ThesisId` AS `ThesisId`,count(`thesis_checklist_map`.`ThesisChecklistId`) AS `Count` from `thesis_checklist_map` group by `thesis_checklist_map`.`ThesisId`) `total` on(`t`.`ThesisId` = `total`.`ThesisId`)) ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure for view `panel_student_vw`
 --
 DROP TABLE IF EXISTS `panel_student_vw`;
@@ -1434,6 +1559,16 @@ DROP TABLE IF EXISTS `thesis_checklist_vw`;
 
 DROP VIEW IF EXISTS `thesis_checklist_vw`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `thesis_checklist_vw`  AS SELECT `t`.`ThesisId` AS `ThesisId`, `c`.`CheckListId` AS `CheckListId`, `c`.`Part` AS `Part`, `tcm`.`Status` AS `Status`, `t`.`Title` AS `Title`, `tgs`.`Authors` AS `Authors`, `tgs`.`Adviser` AS `Adviser`, `tgs`.`Instructor` AS `Instructor`, `c`.`StepNumber` AS `StepNumber`, `c`.`TaskName` AS `TaskName`, concat(`c`.`TaskNameAlias`,'_',replace(`t`.`Title`,' ','_')) AS `UploadedFileName`, `c`.`Assignee` AS `Assignee`, `c`.`Action` AS `Action` FROM (((`thesis` `t` left join `thesis_checklist_map` `tcm` on(`t`.`ThesisId` = `tcm`.`ThesisId`)) left join `checklist` `c` on(`c`.`CheckListId` = `tcm`.`CheckListId`)) left join `thesis_groupedstudents_vw` `tgs` on(`t`.`ThesisId` = `tgs`.`ThesisId`)) ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `thesis_dashboard_details`
+--
+DROP TABLE IF EXISTS `thesis_dashboard_details`;
+
+DROP VIEW IF EXISTS `thesis_dashboard_details`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `thesis_dashboard_details`  AS SELECT (select distinct count(`t`.`ThesisId`) AS `totalDepartment` from ((`thesis` `t` left join `thesisstudentmap` `tsm` on(`t`.`ThesisId` = `tsm`.`ThesisId`)) left join `student` `s` on(`tsm`.`StudentId` = `s`.`StudentId`)) where `s`.`Department` = 'Engineering') AS `totalDepartment`, (select distinct count(`t`.`ThesisId`) AS `totalCourse` from ((`thesis` `t` left join `thesisstudentmap` `tsm` on(`t`.`ThesisId` = `tsm`.`ThesisId`)) left join `student` `s` on(`tsm`.`StudentId` = `s`.`StudentId`)) where `s`.`Department` = 'Engineering' and `s`.`Course` = 'Computer Engineering') AS `totalCourse`, (select 40 AS `pendingDefense`) AS `pendingDefense`, (select distinct count(`users`.`UserId`) AS `activeUser` from `users` where `users`.`Status` = 'Active') AS `activeUser` ;
 
 -- --------------------------------------------------------
 

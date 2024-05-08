@@ -115,12 +115,12 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             }
 
             .gauge-chart-container {
-                margin-top: 20px;
+                margin-top: -20px;
             }
 
             #gauge-chart {
                 width: 100%;
-                height: 350px;
+                height: 310px;
                 margin: auto;
             }
 
@@ -140,12 +140,28 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 transform: translate(-50%, -50%);
             }
 
+            .loading-card {
+                display: none;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .loading-gauge {
+                display: none;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
             .loader {
-                border: 4px solid #f3f3f3;
-                border-top: 4px solid #3498db;
+                border: 7px solid #f3f3f3;
+                border-top: 7px solid #3498db;
                 border-radius: 50%;
-                width: 20px;
-                height: 20px;
+                width: 40px;
+                height: 40px;
                 animation: spin 1s linear infinite;
             }
 
@@ -215,23 +231,23 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             <div class="overview-selects">
                 <div><span style="font-size: 24px; font-weight: bold">Overview</span></div>
                 <div>
-                    <label style="font-size: 16px;" for="department">Select Department:</label>
+                    <label style="font-size: 14px;" for="department">Select Department:</label>
                     <select id="department">
-                        <option value="all">All Departments</option>
-                        <option value="computer_science">Computer Science</option>
-                        <option value="engineering">Engineering</option>
-                        <option value="biology">Biology</option>
-                        <option value="chemistry">Chemistry</option>
+                        <option value="Engineering">SEAIT</option>
                     </select>
                 </div>
                 <div>
-                    <label style="font-size: 16px;" for="course">Select Course:</label>
+                    <label style="font-size: 14px;" for="course">Select Course:</label>
                     <select id="course">
-                        <option value="all">All Courses</option>
-                        <option value="course1">Course 1</option>
-                        <option value="course2">Course 2</option>
-                        <option value="course3">Course 3</option>
-                        <option value="course4">Course 4</option>
+                        <option value="All">All</option>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                        <option value="Computer Engineering">Computer Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Electronics Engineering">Electronics Engineering</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Library and Information Science">Library and Information Science</option>
                     </select>
                 </div>
             </div>
@@ -243,8 +259,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     </div>
                     <div>
                         <p class="card-value-label" id="total-thesis-label">Total Department Thesis</p>
-                        <p class="card-value" id="total-theses">50</p>
-                        <div class="loading">
+                        <p class="card-value" id="total-theses">0</p>
+                        <div class="loading-card">
                             <div class="loader"></div>
                         </div>
                     </div>
@@ -255,8 +271,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     </div>
                     <div>
                         <p class="card-value-label" id="total-course-label">Total Course Thesis</p>
-                        <p class="card-value" id="theses-in-progress">20</p>
-                        <div class="loading">
+                        <p class="card-value" id="theses-in-progress">0</p>
+                        <div class="loading-card">
                             <div class="loader"></div>
                         </div>
                     </div>
@@ -267,8 +283,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     </div>
                     <div>
                         <p class="card-value-label" id="total-pending-label">Pending Defense</p>
-                        <p class="card-value" id="completed-theses">30</p>
-                        <div class="loading">
+                        <p class="card-value" id="completed-theses">0</p>
+                        <div class="loading-card">
                             <div class="loader"></div>
                         </div>
                     </div>
@@ -279,8 +295,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     </div>
                     <div>
                         <p class="card-value-label" id="total-users-label">Online Users</p>
-                        <p class="card-value" id="theses-pending-review">10</p>
-                        <div class="loading">
+                        <p class="card-value" id="theses-pending-review">0</p>
+                        <div class="loading-card">
                             <div class="loader"></div>
                         </div>
                     </div>
@@ -289,20 +305,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
             <div class="large-card">
                 <div style="display: flex; align-items: center;">
-                    <h6 style="font-weight: bold; margin-right: 120px;">Thesis Progress Summary</h6>
+                    <h6 style="font-weight: bold; margin-right: 80px;">Thesis Progress Summary</h6>
+
                     <label for="date-filter">Date Filter:</label>
-                    <select id="date-filter">
-                        <option value="all">All Dates</option>
-                        <option value="last-week">Last Week</option>
-                        <option value="last-month">Last Month</option>
-                        <option value="last-year">Last Year</option>
-                    </select>
+                    <input style="margin-right: 10px;" type="date" id="date-filter">
+
                     <label for="status-filter">Status Filter:</label>
                     <select id="status-filter">
                         <option value="all">All Statuses</option>
-                        <option value="Completed">Completed</option>
+                        <option value="Not Started">Not Started</option>
                         <option value="In Progress">In Progress</option>
-                        <option value="Pending Review">Pending Review</option>
+                        <option value="Completed">Completed</option>
                     </select>
                 </div>
                 <table id="all-thesis-records">
@@ -313,39 +326,39 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                         <th>Status</th>
                         <th>Progress</th>
                     </tr>
-                    <tr>
-                        <td>Thesis 1</td>
-                        <td>Ins 1</td>
-                        <td>2024-05-01</td>
-                        <td>Completed</td>
-                        <td>10%</td>
-                    </tr>
-                    <tr>
-                        <td>Thesis 2</td>
-                        <td>Ins 2</td>
-                        <td>2024-05-01</td>
-                        <td>In Progress</td>
-                        <td>10%</td>
-                    </tr>
-                    <tr>
-                        <td>Thesis 3</td>
-                        <td>Ins 3</td>
-                        <td>2024-05-01</td>
-                        <td>Completed</td>
-                        <td>10%</td>
-                    </tr>
-                    <tr>
-                        <td>Thesis 4</td>
-                        <td>Ins 4</td>
-                        <td>2023-05-01</td>
-                        <td>Pending Review</td>
-                        <td>10%</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
+                    <?php
+
+                    $dashboardTable_query = "SELECT * FROM getdashboardtable";
+                    $dashboardTable_result = mysqli_query($con, $dashboardTable_query);
+
+                    if ($dashboardTable_result && mysqli_num_rows($dashboardTable_result) > 0)
+                    {
+                        while ($thesis = mysqli_fetch_assoc($dashboardTable_result))
+                        {
+                            $Title = $thesis['Title'];
+                            $Instructor = $thesis['Name'];
+                            $LastMod = $thesis['LastModifiedDate'];
+                            $Status = $thesis['Status'];
+                            $Percent = $thesis['Percent'];
+
+                            echo "<tr>
+                                    <td>$Title</td>
+                                    <td>$Instructor</td>
+                                    <td>$LastMod</td>
+                                    <td>$Status</td>
+                                    <td>$Percent " . " % </td>
+                                </tr>";
+                        }
+                    } else
+                    {
+                        echo "<div>No Data Available</div>";
+                    }
+
+                    ?>
                 </table>
-                <div class="loading">
+                <!-- <div class="loading">
                     <div class="loader"></div>
-                </div>
+                </div> -->
             </div>
 
             <div class="gauge-card-container">
@@ -353,73 +366,78 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     <div style="font-weight: bold; font-size: 15px;" class="progress-label">Overall Progress</div>
                     <div class="filter-container">
                         <!-- Your filter elements here -->
-                        <label for="filter">Filter:</label>
-                        <select id="filter">
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
+                        <label for="part-filter">Filter:</label>
+                        <select id="part-filter">
+                            <option value="All">All</option>
+                            <option value="1">Part 1</option>
+                            <option value="2">Part 2</option>
                         </select>
                     </div>
                 </div>
                 <div class="gauge-chart-container">
                     <div id="gauge-chart"></div>
+                    <div class="loading-gauge">
+                        <div class="loader"></div>
+                    </div>
                 </div>
             </div>
+        </div>
 
 
         </div>
 
         <script>
-            // Placeholder data (replace with actual data from backend)
-            var totalTheses = 50;
-            var thesesInProgress = 20;
-            var completedTheses = 30;
-            var thesesPendingReview = 10;
-
-            // Display placeholder data
-            document.getElementById('total-theses').textContent = totalTheses;
-            document.getElementById('theses-in-progress').textContent = thesesInProgress;
-            document.getElementById('completed-theses').textContent = completedTheses;
-            document.getElementById('theses-pending-review').textContent = thesesPendingReview;
-
-            // Function to update data based on filters
-            function updateData() {
+            // Function to fetch data from the database using AJAX
+            function fetchDataFromDatabase() {
                 // Show loading icon for each card
-                var loadingIcons = document.querySelectorAll('.loading');
+                var loadingIcons = document.querySelectorAll('.loading-card');
                 loadingIcons.forEach(function (loadingIcon) {
                     loadingIcon.style.display = 'block';
                 });
 
-                // Placeholder function, replace with actual logic to fetch data from backend
                 setTimeout(function () {
-                    // Update total theses count
-                    totalTheses = Math.floor(Math.random() * 100) + 1;
-                    document.getElementById('total-theses').textContent = totalTheses;
+                    // Get selected department and course values
+                    var department = document.getElementById('department').value;
+                    var course = document.getElementById('course').value;
 
-                    // Update other counts accordingly
-                    thesesInProgress = Math.floor(Math.random() * totalTheses);
-                    completedTheses = Math.floor(Math.random() * (totalTheses - thesesInProgress));
-                    thesesPendingReview = totalTheses - thesesInProgress - completedTheses;
-
-                    // Update displayed data
-                    document.getElementById('theses-in-progress').textContent = thesesInProgress;
-                    document.getElementById('completed-theses').textContent = completedTheses;
-                    document.getElementById('theses-pending-review').textContent = thesesPendingReview;
-
-                    // Hide loading icon for each card
-                    loadingIcons.forEach(function (loadingIcon) {
-                        loadingIcon.style.display = 'none';
-                    });
-                }, 1000); // Simulate delay for fetching data
+                    // Make an AJAX request to a PHP script that will fetch data from the database
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            if (xhr.status === 200) {
+                                // Parse the JSON response and update the displayed data
+                                var responseData = JSON.parse(xhr.responseText);
+                                //alert(JSON.stringify(responseData));
+                                document.getElementById('total-theses').textContent = responseData.totalDepartment;
+                                document.getElementById('theses-in-progress').textContent = responseData.totalCourse;
+                                document.getElementById('completed-theses').textContent = responseData.pendingDefense;
+                                document.getElementById('theses-pending-review').textContent = responseData.activeUser;
+                            } else {
+                                // Handle error
+                                console.error('Error fetching data from the server:', xhr.status);
+                            }
+                        }
+                        // Hide loading icon for each card
+                        loadingIcons.forEach(function (loadingIcon) {
+                            loadingIcon.style.display = 'none';
+                        });
+                    };
+                    xhr.open('GET', '/thesis-mgmt/dashboard/dashboard-details.php?department=' + encodeURIComponent(department) + '&course=' + encodeURIComponent(course));
+                    xhr.send();
+                }, 1000);
             }
 
             // Event listeners for filter changes
-            document.getElementById('department').addEventListener('change', updateData);
-            document.getElementById('course').addEventListener('change', updateData);
+            document.getElementById('department').addEventListener('change', fetchDataFromDatabase);
+            document.getElementById('course').addEventListener('change', fetchDataFromDatabase);
+
+            // Call fetchDataFromDatabase on initial load
+            fetchDataFromDatabase();
+
 
             // Filter function for the table
             function filterTable() {
-                var dateFilter = document.getElementById('date-filter').value;
+                var selectedDate = document.getElementById('date-filter').value;
                 var statusFilter = document.getElementById('status-filter').value;
                 var rows = document.getElementById('all-thesis-records').getElementsByTagName('tr');
 
@@ -429,18 +447,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     var statusCell = row.getElementsByTagName('td')[3].textContent;
 
                     // Check if date matches the filter
-                    if (dateFilter !== 'all') {
-                        var currentDate = new Date();
+                    if (selectedDate) {
                         var rowDate = new Date(dateCell);
-                        var daysDifference = Math.ceil((currentDate - rowDate) / (1000 * 60 * 60 * 24));
-
-                        if (dateFilter === 'last-week' && daysDifference > 7) {
-                            row.style.display = 'none';
-                            continue;
-                        } else if (dateFilter === 'last-month' && daysDifference > 30) {
-                            row.style.display = 'none';
-                            continue;
-                        } else if (dateFilter === 'last-year' && daysDifference > 365) {
+                        var selectedDateObj = new Date(selectedDate);
+                        if (rowDate.toDateString() !== selectedDateObj.toDateString()) {
                             row.style.display = 'none';
                             continue;
                         }
@@ -463,113 +473,180 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         </script>
 
         <script>
-            // Placeholder data
-            var totalTheses = 50;
-            var completedTheses = 30;
 
-            // Calculate completion percentage
-            var gaugeValue = (completedTheses / totalTheses) * 100;
+            function getGaugeData() {
+                // Show loading icon for each card
+                var loadingIcons = document.querySelectorAll('.loading-gauge');
+                loadingIcons.forEach(function (loadingIcon) {
+                    loadingIcon.style.display = 'block';
+                });
 
-            // Get the gauge chart container element
-            var gaugeContainer = document.getElementById('gauge-chart');
+                setTimeout(function () {
+                    var partFilter = document.getElementById('part-filter').value;
 
-            // Set the width of the gauge chart container
-            gaugeContainer.style.width = '300'; // Adjust width as needed
+                    // Make an AJAX request to a PHP script that will fetch data from the database
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            if (xhr.status === 200) {
+                                // Parse the JSON response and update the displayed data
+                                var responseData = JSON.parse(xhr.responseText);
+                                var gaugeContainer = document.getElementById('gauge-chart');
 
-            // Reinitialize the ECharts instance with the updated container width
-            var myChart = echarts.init(gaugeContainer);
+                                var myChart = echarts.init(gaugeContainer);
+                                var option;
 
+                                const gaugeData = [
+                                    {
+                                        value: 0,
+                                        name: 'Completed',
+                                        title: {
+                                            offsetCenter: ['-80%', '50%']
+                                        },
+                                        detail: {
+                                            offsetCenter: ['-80%', '68%'],
+                                            width: 40,
+                                            height: 12,
+                                            fontSize: 14,
+                                            color: '#fff',
+                                            backgroundColor: '#91cc75',
+                                            borderRadius: 3,
+                                            formatter: '{value}%'
+                                        }
+                                    },
+                                    {
+                                        value: 0,
+                                        name: 'In Progress',
+                                        title: {
+                                            offsetCenter: ['0%', '50%']
+                                        },
+                                        detail: {
+                                            offsetCenter: ['0%', '68%'],
+                                            width: 40,
+                                            height: 12,
+                                            fontSize: 14,
+                                            color: '#fff',
+                                            backgroundColor: '#fac858',
+                                            borderRadius: 3,
+                                            formatter: '{value}%'
+                                        }
+                                    },
+                                    {
+                                        value: 0,
+                                        name: 'Not Started',
+                                        title: {
+                                            offsetCenter: ['80%', '50%']
+                                        },
+                                        detail: {
+                                            offsetCenter: ['80%', '68%'],
+                                            width: 40,
+                                            height: 12,
+                                            fontSize: 14,
+                                            color: '#fff',
+                                            backgroundColor: '#ee6666',
+                                            borderRadius: 3,
+                                            formatter: '{value}%'
+                                        }
+                                    }
+                                ];
 
-            // Set options for gauge chart
-            var option = {
-                series: [
-                    {
-                        type: 'gauge',
-                        startAngle: 180,
-                        endAngle: 0,
-                        min: 0,
-                        max: 100,
-                        splitNumber: 5,
-                        itemStyle: {
-                            color: '#58D9F9',
-                            shadowColor: 'rgba(0,138,255,0.45)',
-                            shadowBlur: 10,
-                            shadowOffsetX: 2,
-                            shadowOffsetY: 2
-                        },
-                        progress: {
-                            show: true,
-                            roundCap: true,
-                            width: 18
-                        },
-                        pointer: {
-                            icon: 'path://M2090.36389,615.30999 L2090.36389,615.30999 C2091.48372,615.30999 2092.40383,616.194028 2092.44859,617.312956 L2096.90698,728.755929 C2097.05155,732.369577 2094.2393,735.416212 2090.62566,735.56078 C2090.53845,735.564269 2090.45117,735.566014 2090.36389,735.566014 L2090.36389,735.566014 C2086.74736,735.566014 2083.81557,732.63423 2083.81557,729.017692 C2083.81557,728.930412 2083.81732,728.84314 2083.82081,728.755929 L2088.2792,617.312956 C2088.32396,616.194028 2089.24407,615.30999 2090.36389,615.30999 Z',
-                            length: '65%',
-                            width: 5,
-                            offsetCenter: [0, '5%']
-                        },
-                        axisLine: {
-                            roundCap: true,
-                            lineStyle: {
-                                width: 18
+                                // Set options for gauge chart
+                                option = {
+                                    color: ['#91cc75', '#fac858', '#ee6666'],
+                                    series: [
+                                        {
+                                            type: 'gauge',
+                                            anchor: {
+                                                show: false,
+                                                showAbove: false,
+                                                size: 12,
+                                                itemStyle: {
+                                                    color: '#FAC858'
+                                                }
+                                            },
+                                            startAngle: 180,
+                                            endAngle: 0,
+                                            min: 0,
+                                            max: 100,
+                                            splitNumber: 5,
+                                            progress: {
+                                                show: true,
+                                                roundCap: true,
+                                                width: 18
+                                            },
+                                            pointer: {
+                                                icon: 'path://M2090.36389,615.30999 L2090.36389,615.30999 C2091.48372,615.30999 2092.40383,616.194028 2092.44859,617.312956 L2096.90698,728.755929 C2097.05155,732.369577 2094.2393,735.416212 2090.62566,735.56078 C2090.53845,735.564269 2090.45117,735.566014 2090.36389,735.566014 L2090.36389,735.566014 C2086.74736,735.566014 2083.81557,732.63423 2083.81557,729.017692 C2083.81557,728.930412 2083.81732,728.84314 2083.82081,728.755929 L2088.2792,617.312956 C2088.32396,616.194028 2089.24407,615.30999 2090.36389,615.30999 Z',
+                                                length: '65%',
+                                                width: 5,
+                                                offsetCenter: [0, '5%']
+                                            },
+                                            axisLine: {
+                                                roundCap: true,
+                                                lineStyle: {
+                                                    width: 18
+                                                }
+                                            },
+                                            axisTick: {
+                                                splitNumber: 2,
+                                                lineStyle: {
+                                                    width: 2,
+                                                    color: '#999'
+                                                }
+                                            },
+                                            splitLine: {
+                                                length: 12,
+                                                lineStyle: {
+                                                    width: 3,
+                                                    color: '#999'
+                                                }
+                                            },
+                                            axisLabel: {
+                                                distance: 20,
+                                                color: '#999',
+                                                fontSize: 12
+                                            },
+                                            title: {
+                                                fontSize: 14
+                                            },
+                                            detail: {
+                                                width: 25,
+                                                height: 12,
+                                                fontSize: 14,
+                                                color: '#fff',
+                                                backgroundColor: 'inherit',
+                                                borderRadius: 3,
+                                                formatter: '{value}%'
+                                            },
+                                            data: gaugeData
+                                        }
+                                    ]
+                                };
+
+                                gaugeData[0].value = responseData.Completed;
+                                gaugeData[1].value = responseData.InProgress;
+                                gaugeData[2].value = responseData.NotStarted;
+                                // Set options to chart instance
+                                myChart.setOption(option);
+                            } else {
+                                // Handle error
+                                console.error('Error fetching data from the server:', xhr.status);
                             }
-                        },
-                        axisTick: {
-                            splitNumber: 2,
-                            lineStyle: {
-                                width: 2,
-                                color: '#999'
-                            }
-                        },
-                        splitLine: {
-                            length: 12,
-                            lineStyle: {
-                                width: 3,
-                                color: '#999'
-                            }
-                        },
-                        axisLabel: {
-                            distance: 20,
-                            color: '#999',
-                            fontSize: 12
-                        },
-                        title: {
-                            show: false
-                        },
-                        detail: {
-                            width: '80%',
-                            lineHeight: 85,
-                            height: 80,
-                            borderRadius: 8,
-                            offsetCenter: [0, '15%'],
-                            valueAnimation: true,
-                            formatter: function (value) {
-                                return '{value|' + value.toFixed(0) + '}{unit|%}';
-                            },
-                            rich: {
-                                value: {
-                                    fontSize: 20,
-                                    fontWeight: 'bolder',
-                                    color: '#777'
-                                },
-                                unit: {
-                                    fontSize: 20,
-                                    color: '#999',
-                                    padding: [0, 0, 0, 10]
-                                }
-                            }
-                        },
-                        data: [
-                            {
-                                value: 90
-                            }
-                        ]
-                    }
-                ]
-            };
+                        }
+                        // Hide loading icon for each card
+                        loadingIcons.forEach(function (loadingIcon) {
+                            loadingIcon.style.display = 'none';
+                        });
+                    };
+                    xhr.open('GET', '/thesis-mgmt/dashboard/dashboard-gauge.php?part=' + encodeURIComponent(partFilter));
+                    xhr.send();
+                }, 1000);
 
-            // Set options to chart instance
-            myChart.setOption(option);
+            }
+
+            document.getElementById('part-filter').addEventListener('change', getGaugeData);
+
+            // Call fetchDataFromDatabase on initial load
+            getGaugeData();
         </script>
     </body>
 

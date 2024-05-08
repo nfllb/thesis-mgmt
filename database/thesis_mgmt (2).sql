@@ -1152,3 +1152,160 @@ left join `thesisstudentmap` `tsm`
 on `t`.`ThesisId` = `tsm`.`ThesisId` 
 left join `student` `s` 
 on `tsm`.`StudentId` = `s`.`StudentId`;
+
+/***********************************************/
+
+CREATE OR REPLACE VIEW `panel_student_vw` AS
+SELECT panel.ThesisId,
+t.School,
+t.SchoolYear,
+panel.PanelMember,
+concat(`s`.`FirstName`,' ',`s`.`MiddleName`,' ',`s`.`LastName`) AS `StudentName`,
+`t`.`DateOfFinalDefense` AS `DateOfFinalDefense` 
+FROM thesispanelmembermap tpm
+JOIN 
+(SELECT tpmm.ThesisId,
+    SUBSTRING_INDEX(SUBSTRING_INDEX(tpmm.PanelMembers, ';', numbers.n), ';', -1) AS PanelMember
+FROM thesispanelmembermap tpmm
+JOIN (SELECT 0 AS N UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9) numbers
+ON CHAR_LENGTH(tpmm.PanelMembers) - CHAR_LENGTH(REPLACE(tpmm.PanelMembers, ';', '')) >= numbers.n - 1
+WHERE tpmm.PanelMembers != '') panel
+ON tpm.ThesisId = panel.ThesisId AND panel.PanelMember != ''
+LEFT JOIN thesis t
+ON panel.ThesisId = t.ThesisId
+LEFT JOIN thesisstudentmap tsm
+ON tsm.ThesisId = t.ThesisId
+LEFT JOIN student s
+ON s.StudentId = tsm.StudentId;
+
+
+CREATE OR REPLACE VIEW `thesis_student_panel_vw` AS
+SELECT t.ThesisId,
+t.Title,
+s.UserId,
+CONCAT(s.FirstName, ' ', s.LastName) AS StudentName,
+u.Name AS Adviser,
+tpmm.PanelMembers
+FROM thesis t
+LEFT JOIN thesisstudentmap tsm
+ON t.ThesisId = tsm.ThesisId
+LEFT JOIN student s
+ON tsm.StudentId = s.StudentId
+LEFT JOIN users u
+ON u.UserId = t.AdviserId
+LEFT JOIN thesispanelmembermap tpmm
+ON tpmm.ThesisId = t.ThesisId
+
+/***********************************************/
+
+DROP PROCEDURE IF EXISTS getDashboardDetails;
+
+DELIMITER //
+
+CREATE PROCEDURE getDashboardDetails(
+  IN course VARCHAR(255),
+  IN department VARCHAR(255)
+  )
+BEGIN
+  select (select count( distinct `t`.`ThesisId`) AS `totalDepartment` 
+          from ((`thesis_mgmt`.`thesis` `t` 
+          left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+          on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+          left join `thesis_mgmt`.`student` `s` 
+          on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+          where `s`.`Department` = department) AS `totalDepartment`,
+
+          IF(course = 'All', 
+            (select count( distinct `t`.`ThesisId`) AS `totalCourse` 
+            from ((`thesis_mgmt`.`thesis` `t` 
+            left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+            on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+            left join `thesis_mgmt`.`student` `s` 
+            on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+            where `s`.`Department` = department),
+
+            (select count( distinct `t`.`ThesisId`) AS `totalCourse` 
+            from ((`thesis_mgmt`.`thesis` `t` 
+            left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+            on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+            left join `thesis_mgmt`.`student` `s` 
+            on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+            where `s`.`Department` = department 
+            and `s`.`Course` = course) ) AS `totalCourse`,
+          
+          IF(course = 'All', 
+          (SELECT COUNT(DISTINCT ThesisId)
+          FROM thesis_checklist_map
+          WHERE Status != 'Not Started'
+          AND ThesisId IN ( select t.ThesisId
+                            from ((`thesis_mgmt`.`thesis` `t` 
+                                  left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+                                  on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+                                  left join `thesis_mgmt`.`student` `s` 
+                                  on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+                            where `s`.`Department` = department)
+          
+          ),
+          
+          (SELECT COUNT(DISTINCT ThesisId)
+          FROM thesis_checklist_map
+          WHERE Status != 'Not Started'
+          AND ThesisId IN ( select t.ThesisId
+                            from ((`thesis_mgmt`.`thesis` `t` 
+                                  left join `thesis_mgmt`.`thesisstudentmap` `tsm` 
+                                  on(`t`.`ThesisId` = `tsm`.`ThesisId`)) 
+                                  left join `thesis_mgmt`.`student` `s` 
+                                  on(`tsm`.`StudentId` = `s`.`StudentId`)) 
+                            where `s`.`Department` = department 
+                            and `s`.`Course` = course)
+          
+          )) AS `pendingDefense`,
+          
+          (select count( distinct `thesis_mgmt`.`users`.`UserId`) AS `activeUser` 
+          from `thesis_mgmt`.`users` 
+          where `thesis_mgmt`.`users`.`Status` = 'Active') AS `activeUser`;
+END //
+
+DELIMITER ;
+
+/***********************************************/
+
+CREATE OR REPLACE VIEW `getDashboardTable` AS
+SELECT t.Title, u.Name, t.LastModifiedDate, t.Status, IFNULL(ROUND((comp.Count/total.Count) * 100, 0), 0) AS Percent
+FROM `thesis` t
+LEFT JOIN users u
+ON t.InstructorId = u.UserId
+LEFT JOIN (
+    SELECT ThesisId, COUNT(ThesisChecklistId) AS `Count`
+    FROM thesis_checklist_map
+    WHERE Status = 'Completed'
+    GROUP BY ThesisId
+) comp
+ON t.ThesisId = comp.ThesisId
+LEFT JOIN (
+    SELECT ThesisId, COUNT(ThesisChecklistId) AS `Count`
+    FROM thesis_checklist_map
+    GROUP BY ThesisId
+) total
+ON t.ThesisId = total.ThesisId;
+
+/***********************************************/
+
+CREATE OR REPLACE VIEW `getDashboardGauge` AS
+SELECT c.Part,
+ROUND(COUNT(DISTINCT comp.ThesisChecklistId)/COUNT(DISTINCT total.ThesisChecklistId) * 100 , 2) AS Completed,
+ROUND(COUNT( DISTINCT inprog.ThesisChecklistId)/COUNT( DISTINCT total.ThesisChecklistId) * 100 ,2) AS InProgress,
+ROUND(COUNT( DISTINCT notstarted.ThesisChecklistId)/COUNT( DISTINCT total.ThesisChecklistId) * 100 ,2) AS NotStarted
+FROM checklist c
+LEFT JOIN thesis_checklist_map total
+ON c.CheckListId = total.CheckListId
+LEFT JOIN thesis_checklist_map comp
+ON c.CheckListId = comp.CheckListId
+AND comp.Status = 'Completed'
+LEFT JOIN thesis_checklist_map inprog
+ON c.CheckListId = inprog.CheckListId
+AND inprog.Status = 'In Progress'
+LEFT JOIN thesis_checklist_map notstarted
+ON c.CheckListId = notstarted.CheckListId
+AND notstarted.Status = 'Not Started'
+GROUP BY c.Part;

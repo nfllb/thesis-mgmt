@@ -14,6 +14,21 @@ if (isset($_POST['update_step']))
     {
         $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklistId;
         $query_run = mysqli_query($con, $update_query);
+
+        $max_checklistId_query = "SELECT MAX(ChecklistId) AS Max_ChecklistId FROM `checklist`";
+        $max_checklistId_result = mysqli_query($con, $max_checklistId_query);
+        $max_checklistId = mysqli_fetch_assoc($max_checklistId_result);
+
+        if ($max_checklistId['Max_ChecklistId'] == $checklistId && $new_step_status == 'Completed')
+        {
+            $update_thesis = "UPDATE thesis SET Status = 'Completed', LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+            $update_thesis_result = mysqli_query($con, $update_thesis);
+        } else
+        {
+            $update_thesis = "UPDATE thesis SET Status = 'In Progress', LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+            $update_thesis_result = mysqli_query($con, $update_thesis);
+        }
+
         return;
     }
 
@@ -36,6 +51,9 @@ if (isset($_POST['save_editor']))
 
         $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklistId;
         $query_run = mysqli_query($con, $update_query);
+
+        $update_thesis = "UPDATE thesis SET Status = 'In Progress', LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+        $update_thesis_result = mysqli_query($con, $update_thesis);
 
         return;
     }
@@ -87,6 +105,8 @@ if (isset($_POST['upload_file_step']))
                     {
                         $update_query = "UPDATE thesis_checklist_map SET Status = '$new_step_status' WHERE ThesisId = " . $thesisId . " AND CheckListId = " . $checklist_id;
                         $query_run = mysqli_query($con, $update_query);
+                        $update_thesis = "UPDATE thesis SET Status = 'In Progress', LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+                        $update_thesis_result = mysqli_query($con, $update_thesis);
                         echo 'success';
                     }
                 } else
@@ -129,6 +149,8 @@ if (isset($_POST['approve_step']))
         $update_query_result = mysqli_query($con, $update_query);
         if ($update_query_result)
         {
+            $update_thesis = "UPDATE thesis SET Status = 'In Progress', LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+            $update_thesis_result = mysqli_query($con, $update_thesis);
             echo 'success';
         } else
         {
@@ -157,6 +179,8 @@ if (isset($_POST['reject_step']))
         $update_query_result = mysqli_query($con, $update_query);
         if ($update_query_result)
         {
+            $update_thesis = "UPDATE thesis SET Status = 'In Progress', LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+            $update_thesis_result = mysqli_query($con, $update_thesis);
             echo 'success';
         } else
         {
@@ -186,7 +210,7 @@ if (isset($_POST['update_panel']))
 
     $update_thesisPanelMap_result = mysqli_query($con, $update_thesisPanelMap);
 
-    $update_thesis = "UPDATE thesis SET LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
+    $update_thesis = "UPDATE thesis SET Status = 'In Progress', LastModifiedDate = CURDATE(), LastModifiedBy = '" . $_SESSION['name'] . "' WHERE ThesisId = " . $thesisId;
     $update_thesis_result = mysqli_query($con, $update_thesis);
     if ($update_thesis_result)
     {

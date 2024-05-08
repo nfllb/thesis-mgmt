@@ -31,7 +31,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 header("Location: /thesis-mgmt/create_new_thesis.php");
             } else
             {
-                header("Location: /thesis-mgmt/dashboard/index.php");
+                header("Location: /thesis-mgmt/tasks/index.php");
             }
         }
         ?>
