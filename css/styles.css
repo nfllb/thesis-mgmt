@@ -1,12 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
-/* Define primary color variables */
 :root {
-	--primary-bg-color: #ecdfd7; /* Light background color */
-	--primary-text-color: #333; /* Dark text color */
+	--primary-bg-color: #ecdfd7;
+	--primary-text-color: #333;
 }
 
-/* Apply primary background color to the page */
 body {
 	font-family: Arial, Helvetica Neue, Helvetica,
 		sans-serif;
@@ -183,14 +181,14 @@ div#thesisContainer.card.w-75.mb-3
 }
 
 .sidebar {
-	width: 250px; /* Adjust the width as needed */
+	width: 250px;
 	flex: 0 0 auto;
 	float: left;
 }
 
 .content {
 	flex: 1;
-	padding: 20px; /* Adjust the padding as needed */
+	padding: 20px;
 	margin-left: 260px;
 }
 
@@ -238,21 +236,32 @@ div#thesisContainer.card.w-75.mb-3
 	text-decoration: none;
 }
 
+.wrapper .sidebar ul div {
+	margin: 10px 0;
+}
+
 .wrapper .sidebar ul li a .icon {
 	color: #dee4ec;
-	width: 30px;
-	display: inline-block;
+	font-size: 14px;
+	margin-right: 10px;
 }
 
 .wrapper .sidebar ul div .newdoc {
-	display: block;
+	display: inline-block;
 	padding: 5px 10px;
 	color: black;
 	background: white;
-	font-size: 12px;
+	font-size: 14px;
 	position: relative;
 	border-radius: 20px !important;
 	margin: 0px 15px 0px 15px;
+	text-decoration: none;
+	transition: background-color 0.3s ease;
+	cursor: pointer;
+}
+
+.wrapper .sidebar ul div .newdoc:hover {
+	opacity: 70%;
 }
 
 .wrapper .sidebar ul div .newdoc .icon {
@@ -329,11 +338,7 @@ body.active .wrapper .section {
 }
 
 .progress-container {
-	width: 200px;
-	height: 100px;
-	position: relative;
-	border-radius: 15px !important;
-	background-color: #f4ede8;
+	width: 300px;
 }
 
 .progress-circle {
@@ -348,7 +353,6 @@ body.active .wrapper .section {
 
 .progress-bar {
 	stroke: #d2691e;
-	/* Change color to orange */
 }
 
 .progress-text {
@@ -405,7 +409,7 @@ body.active .wrapper .section {
 	border: none;
 	border-radius: 5px;
 	padding: 5px 10px;
-	margin-left: 10px; /* Adjust as needed */
+	margin-left: 10px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
 	font-size: 12px;
@@ -419,7 +423,6 @@ body.active .wrapper .section {
 	margin-right: 3px;
 }
 
-/* Additional CSS for logout button design */
 .logout-btn {
 	background: linear-gradient(
 		135deg,
@@ -431,14 +434,21 @@ body.active .wrapper .section {
 	padding: 10px 20px;
 	border-radius: 30px;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	/* Add subtle shadow effect */
 	transition: transform 0.2s ease,
 		box-shadow 0.2s ease;
 }
 
 .logout-btn:hover {
 	transform: scale(1.05);
-	/* Add a slight scale effect on hover */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-	/* Enhance shadow on hover */
+}
+
+.toaster {
+	background-color: rgba(0, 128, 0, 0.8);
+	color: #fff;
+	font-size: 18px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+.toaster.error {
+	background-color: rgba(255, 0, 0, 0.8);
 }

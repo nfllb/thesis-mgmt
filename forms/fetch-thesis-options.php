@@ -33,6 +33,6 @@ while ($row = mysqli_fetch_assoc($result))
 // Output options
 ?>
 <select class="form-select" id="selectedThesis">
-    <option disabled selected>Select Thesis</option>
+    <option value="none" disabled selected>Select Thesis</option>
     <?php echo $options; ?>
 </select>

@@ -91,40 +91,57 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
 		<div class='container'>
 			<?php
-			$sqlGetFiles = "SELECT * FROM files WHERE Type = 'Report'";
-			$result = mysqli_query($con, $sqlGetFiles);
+			if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator')
+			{
+				$sqlGetFiles = "SELECT * FROM files WHERE Type = 'Report'";
+				$result = mysqli_query($con, $sqlGetFiles);
 
-			if (mysqli_num_rows($result) > 0)
-			{ ?>
-				<div class="row row-cols-1 row-cols-md-3 g-4">
-					<?php
-					while ($file = mysqli_fetch_assoc($result))
-					{
-						$fileName = $file['filename'];
-						$doc_code = $file['DocumentCode'];
-						?>
-						<div class="col">
-							<div class="card shadow">
-								<div class="card-body">
-									<p class="card-text" style="font-size: 0.9rem;"><?php echo $fileName; ?></p>
-									<!-- Adjust font-size for the file name -->
-								</div>
-								<div class="card-footer d-flex justify-content-center">
-									<button id="gotoreport" value="<?php echo $doc_code; ?>" type="button"
-										class="btn btn-primary btn-sm"><?php echo $doc_code; ?></button>
+				if (mysqli_num_rows($result) > 0)
+				{ ?>
+					<div class="row row-cols-1 row-cols-md-3 g-4">
+						<?php
+						while ($file = mysqli_fetch_assoc($result))
+						{
+							$fileName = $file['filename'];
+							$doc_code = $file['DocumentCode'];
+							?>
+							<div class="col">
+								<div class="card shadow">
+									<div class="card-body">
+										<p class="card-text" style="font-size: 0.9rem;"><?php echo $fileName; ?></p>
+										<!-- Adjust font-size for the file name -->
+									</div>
+									<div class="card-footer d-flex justify-content-center">
+										<button id="gotoreport" value="<?php echo $doc_code; ?>" type="button"
+											class="btn btn-primary btn-sm"><?php echo $doc_code; ?></button>
+									</div>
 								</div>
 							</div>
-						</div>
-						<?php
-					}
-					echo "</div>";
+							<?php
+						}
+						echo "</div>";
+				} else
+				{
+					//Display when no record found;
+				}
+				?>
+
+				</div>
+				<?php
 			} else
 			{
-				//Display when no record found;
+				echo "<div class='container'>
+        <div id='thesisContainer' class='card w-100 mb-3'>
+            <div class='card-body'>
+                <div style='font-size:16px;'class='alert alert-danger' role='alert>
+                    <span class='icon'><i style='font-size:18px;' class='fa-regular fa-circle-xmark'></i></span>
+                    You don't have access to this page. Contact your research coordinator for help.
+                </div>
+            </div>
+        </div>
+        </div>";
 			}
 			?>
-
-			</div>
 
 			<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 			<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

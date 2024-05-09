@@ -89,7 +89,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     <body class="content">
         <div>
             <h3 style="position:absolute;margin-top:20px;">
-                <caption> Reports / URC-FO-064
+                <caption> Reports / URC-FO-065
                 </caption>
             </h3>
             <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
@@ -106,7 +106,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     placeholder="Filter by school year...">
                 <span class="filter-icon"><i class="fas fa-search"></i></span>
             </div> -->
-                    <div class="btn-container" style="margin-right: -40px;">
+                    <div class="btn-container" style="margin-right: -100px;">
                         <button type="button" class="btn btn-primary btn-sm mb-2" id="export-btn"
                             data-clipboard-target="#resultsTable" data-toggle="tooltip" data-placement="top"
                             title="Copy data to clipboard">
@@ -115,7 +115,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                         </button>
                     </div>
                 </div>
-                <div class="table-responsive" style="width: 90%">
+                <div class="table-responsive" style="width: 100%">
                     <table id="resultsTable" class="table">
                         <thead>
                             <tr style="text-align: center;">
@@ -126,6 +126,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                 <th style="width: auto;">OR Number</th>
                                 <th style="width: auto;">Adviser</th>
                                 <th style="width: auto;">Panelists</th>
+                                <th style="width: auto;">Data Analyst</th>
+                                <th style="width: auto;">Language Editor</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -140,7 +142,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                             }
 
                             // Fetch data from the database
-                            $sql = "SELECT * FROM thesis_student_panel_vw";
+                            $sql = "SELECT * FROM thesis_student_panel_editor_vw";
                             $result = $mysqli->query($sql);
 
                             if ($result->num_rows > 0)
@@ -149,6 +151,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                 $currentTitle = null;
                                 $currentAdviser = null;
                                 $currentPanels = null;
+                                $currentEditor = null;
                                 $rowCount = 0;
 
                                 while ($row = $result->fetch_assoc())
@@ -160,6 +163,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                     $thesisPanels = empty($row["PanelMembers"]) ? 'No panelists selected.' : str_replace(";", "<br>", $row["PanelMembers"]);
                                     $thesis_rowSpan = $row["count"];
                                     $thesis_school_year = $row["SchoolYear"];
+                                    $thesis_editor = $row["Editor"];
 
                                     // Check if the category has changed
                                     if ($currentTitle !== $thesisTitle)
@@ -184,6 +188,10 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                         echo "<td rowspan='$thesis_rowSpan'>$thesisAdviser</td>";
                                         // Output the adviser with rowspan
                                         echo "<td rowspan='$thesis_rowSpan'>$thesisPanels</td>";
+                                        // Output the adviser with rowspan
+                                        echo "<td rowspan='$thesis_rowSpan'></td>";
+                                        // Output the adviser with rowspan
+                                        echo "<td rowspan='$thesis_rowSpan'>$thesis_editor</td>";
 
                                         // Reset the row count for the new category
                                         $rowCount = 0;
@@ -191,6 +199,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                         $currentTitle = $thesisTitle;
                                         $currentAdviser = $thesisAdviser;
                                         $currentPanels = $thesisPanels;
+                                        $currentEditor = $thesis_editor;
                                     } else
                                     {
                                         // Output subsequent proponents in separate rows

@@ -19,6 +19,36 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
         <link rel="stylesheet" href="/thesis-mgmt/css/styles.css">
+
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+        <style>
+            .gauge-chart-container {
+                margin-top: -20px;
+            }
+
+            .gauge-chart {
+                width: 100%;
+                height: 250px;
+                margin-left: -35px;
+            }
+
+            .loading-gauge {
+                display: none;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .loader {
+                border: 7px solid #f3f3f3;
+                border-top: 7px solid #3498db;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+            }
+        </style>
     </head>
 
     <body class="content">
@@ -40,6 +70,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             {
                 $thesis_id = $thesis["ThesisId"];
                 $thesis_title = $thesis["Title"];
+                $thesis_status = $thesis["Status"];
                 $thesis_lastModDate = $thesis["LastModifiedDate"];
                 $formatted_date = date("F j, Y", strtotime($thesis_lastModDate));
                 $thesis_authors = $thesis["Authors"];
@@ -54,11 +85,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 $progressCompleted = $progress["Completed"];
                 $progressInProgress = $progress["InProgress"];
                 $progressNotStarted = $progress["NotStarted"];
-
+                echo "<div class='container mb-3'>";
                 echo "<div class='container'>
-                        <div id='thesisContainer' class='card w-60 mb-3' style='float:left;'>
+                        <div id='thesisContainer' class='card w-50 mb-3' style='float:left;'>
                             <div class='card-body'>
-                                <h5 class='card-title'>$thesis_title</h5>
+                                <h5 class='card-title' style='display: inline !important;'>$thesis_title";
+                if ($thesis_status == 'Completed')
+                {
+                    echo "<span style='margin-left: 15px; background-color: green; font-style: oblique;font-family:Segoe UI; font-size: 20px;' class=badge badge-success'>Completed</span>";
+                }
+                echo "</h5>
+                                <hr>
                                 <h6 class='thesis-text-color'>Authors: ";
                 foreach ($authors_arr as $author)
                 {
@@ -68,7 +105,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
                 if ($_SESSION['role'] == 'Research Coordinator')
                 {
-                    echo "<a href='/thesis-mgmt/php/download-thesis.php?thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a><br>";
+                    echo "<a href='/thesis-mgmt/php/download-thesis.php?page=thesis&thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a><br>";
                 } else
                 {
                     echo "<div style='margin-top: 35px;'></div>";
@@ -78,57 +115,151 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     </div>";
                 ?>
 
-                <div id='thesisProgressContainer_<?php echo $thesis_id ?>' style='float:left; margin-left: 20px;'
-                    class='progress-container card-body'>
-                    <svg class='progress-circle' viewBox='0 0 100 50'>
-                        <circle class='progress-background' cx='50' cy='50' r='40'></circle>
-                        <circle class='progress-bar' cx='50' cy='50' r='40' transform='rotate(90 50 50)'></circle>
-                        <text class='progress-text' x='50' y='50'>0%</text>
-                    </svg>
-                    <div class="labels">
-                        <!-- Label for total parts -->
-                        <text class="label-total-parts" x="50" y="10" text-anchor="middle" fill="#333">Total Parts: <tspan
-                                class="total-parts-value"><?php echo $progressTotal; ?></tspan></text>
-
-                        <!-- Label for completed tasks -->
-                        <text class="label-completed" x="25" y="30" fill="green">Completed: <tspan class="completed-value">
-                                <?php echo $progressCompleted; ?>
-                            </tspan>
-                        </text>
-                        <br>
-                        <!-- Label for tasks in progress -->
-                        <text class="label-in-progress" x="25" y="45" fill="yellow">On Going: <tspan class="in-progress-value">
-                                <?php echo $progressInProgress; ?>
-                            </tspan></text>
-
-                        <!-- Label for tasks not started -->
-                        <text class="label-not-started" x="25" y="60" fill="gray">Not Started: <tspan class="not-started-value">
-                                <?php echo $progressNotStarted; ?>
-                            </tspan></text>
+                <div style='float:left; margin-left: 20px;' class='progress-container'>
+                    <div class="gauge-chart-container">
+                        <div class="gauge-chart" id="gauge-chart_<?php echo $thesis_id ?>"></div>
                     </div>
+                </div>
 
-                    <script>
-                        var progressPercentage_<?php echo $thesis_id; ?> = <?php echo $progressPercentage; ?>;
-                        console.log(progressPercentage_<?php echo $thesis_id; ?>);
+                <script>
+                    function setProgress_<?php echo $thesis_id; ?>() {
+                        var gaugeContainer = document.getElementById('gauge-chart_<?php echo $thesis_id; ?>');
 
-                        function setProgress_<?php echo $thesis_id; ?>(progress) {
-                            const circle = document.querySelector('#thesisProgressContainer_<?php echo $thesis_id; ?> .progress-bar');
-                            const text = document.querySelector('#thesisProgressContainer_<?php echo $thesis_id; ?> .progress-text');
+                        var myChart = echarts.init(gaugeContainer);
+                        var option;
 
-                            const radius = circle.getAttribute('r');
-                            const circumference = Math.PI * 2 * radius; // Full circumference
+                        const gaugeData = [
+                            {
+                                value: <?php echo $progressCompleted; ?>,
+                                name: 'Completed',
+                                title: {
+                                    offsetCenter: ['-80%', '20%']
+                                },
+                                detail: {
+                                    offsetCenter: ['-80%', '38%'],
+                                    width: 20,
+                                    height: 10,
+                                    fontSize: 12,
+                                    color: '#fff',
+                                    backgroundColor: '#91cc75',
+                                    borderRadius: 3,
+                                    formatter: '{value}'
+                                }
+                            },
+                            {
+                                value: <?php echo $progressInProgress; ?>,
+                                name: 'In Progress',
+                                title: {
+                                    offsetCenter: ['0%', '20%']
+                                },
+                                detail: {
+                                    offsetCenter: ['0%', '38%'],
+                                    width: 20,
+                                    height: 12,
+                                    fontSize: 12,
+                                    color: '#fff',
+                                    backgroundColor: '#fac858',
+                                    borderRadius: 3,
+                                    formatter: '{value}'
+                                }
+                            },
+                            {
+                                value: <?php echo $progressNotStarted; ?>,
+                                name: 'Not Started',
+                                title: {
+                                    offsetCenter: ['80%', '20%']
+                                },
+                                detail: {
+                                    offsetCenter: ['80%', '38%'],
+                                    width: 20,
+                                    height: 12,
+                                    fontSize: 12,
+                                    color: '#fff',
+                                    backgroundColor: '#ee6666',
+                                    borderRadius: 3,
+                                    formatter: '{value}'
+                                }
+                            }
+                        ];
 
-                            const offset = circumference - (progress / 100) * circumference;
+                        // Set options for gauge chart
+                        option = {
+                            color: ['#91cc75', '#fac858', '#ee6666'],
+                            series: [
+                                {
+                                    type: 'gauge',
+                                    anchor: {
+                                        show: true,
+                                        showAbove: false,
+                                        size: 12,
+                                        itemStyle: {
+                                            color: '#FAC858'
+                                        }
+                                    },
+                                    startAngle: 180,
+                                    endAngle: 0,
+                                    min: 0,
+                                    max: <?php echo $progressTotal ?>,
+                                    splitNumber: 4,
+                                    progress: {
+                                        show: true,
+                                        roundCap: true,
+                                        width: 18
+                                    },
+                                    pointer: {
+                                        icon: 'path://M2090.36389,615.30999 L2090.36389,615.30999 C2091.48372,615.30999 2092.40383,616.194028 2092.44859,617.312956 L2096.90698,728.755929 C2097.05155,732.369577 2094.2393,735.416212 2090.62566,735.56078 C2090.53845,735.564269 2090.45117,735.566014 2090.36389,735.566014 L2090.36389,735.566014 C2086.74736,735.566014 2083.81557,732.63423 2083.81557,729.017692 C2083.81557,728.930412 2083.81732,728.84314 2083.82081,728.755929 L2088.2792,617.312956 C2088.32396,616.194028 2089.24407,615.30999 2090.36389,615.30999 Z',
+                                        length: '65%',
+                                        width: 5,
+                                        offsetCenter: [0, '5%']
+                                    },
+                                    axisLine: {
+                                        roundCap: true,
+                                        lineStyle: {
+                                            width: 18
+                                        }
+                                    },
+                                    axisTick: {
+                                        splitNumber: 2,
+                                        lineStyle: {
+                                            width: 2,
+                                            color: '#999'
+                                        }
+                                    },
+                                    splitLine: {
+                                        length: 12,
+                                        lineStyle: {
+                                            width: 3,
+                                            color: '#999'
+                                        }
+                                    },
+                                    axisLabel: {
+                                        distance: 20,
+                                        color: '#999',
+                                        fontSize: 12
+                                    },
+                                    title: {
+                                        fontSize: 12
+                                    },
+                                    detail: {
+                                        width: 25,
+                                        height: 12,
+                                        fontSize: 14,
+                                        color: '#fff',
+                                        backgroundColor: 'inherit',
+                                        borderRadius: 3,
+                                        formatter: '{value}'
+                                    },
+                                    data: gaugeData
+                                }
+                            ]
+                        };
 
-                            circle.style.strokeDasharray = `${circumference} ${circumference}`;
-                            circle.style.strokeDashoffset = offset;
+                        // Set options to chart instance
+                        myChart.setOption(option);
+                    }
 
-                            text.textContent = `${progress}%`;
-                        }
-
-
-                        setProgress_<?php echo $thesis_id; ?>(progressPercentage_<?php echo $thesis_id; ?>);
-                    </script>
+                    setProgress_<?php echo $thesis_id; ?>();
+                </script>
                 </div>
                 </div>
                 </>

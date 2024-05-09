@@ -14,8 +14,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     </head>
 
     <body>
-        <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
-        <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
 
         <?php
         if ($_SESSION['role'] != 'Student')

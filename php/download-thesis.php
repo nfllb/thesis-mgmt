@@ -10,6 +10,7 @@ if (!isset($_GET["thesisId"]) || empty($_GET["thesisId"]))
 }
 
 $thesisId = $_GET["thesisId"];
+$page = $_GET["page"];
 
 // Prepare and execute SQL query
 $sql_Select = "SELECT FilePath FROM thesis_checklist_file_map WHERE ThesisId = ?";
@@ -55,7 +56,7 @@ if ($result && mysqli_num_rows($result) > 0)
     }
 } else
 {
-    header("Location: /thesis-mgmt/tasks/index.php?error=There are no uploaded files for this thesis.");
+    header("Location: /thesis-mgmt/" . $page . "/index.php?error=There are no uploaded files for this thesis.");
 }
 
 // Close database connection

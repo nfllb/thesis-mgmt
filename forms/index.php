@@ -221,39 +221,54 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 var selectedOption = selectElement.options[selectedIndex];
                 var selectedThesisTitle = selectedOption.text;
                 var selectedThesisId = selectedOption.value;
+                if (selectedThesisId == 'none') {
+                    alert('Please choose a thesis.');
+                    $('#loadingIcon').hide();
+                    $('#generateDoc').removeClass('disabled');
+                    $('#closeModal').removeClass('disabled');
+                } else {
+                    // Get the file name
+                    var fileName = $('.modal-title').data('filename');
 
-                // Get the file name
-                var fileName = $('.modal-title').data('filename');
+                    // Send AJAX request to PHP script
+                    $.ajax({
+                        type: 'POST',
+                        url: 'update-form.php',
+                        data: { fileName: fileName, selectedThesisId: selectedThesisId, thesisTitle: selectedThesisTitle },
+                        success: function (data) {
+                            //alert(data);
+                            // Trigger download of the updated document
+                            window.location.href = 'download-form.php?file=' + data;
 
-                // Send AJAX request to PHP script
-                $.ajax({
-                    type: 'POST',
-                    url: 'update-form.php',
-                    data: { fileName: fileName, selectedThesisId: selectedThesisId, thesisTitle: selectedThesisTitle },
-                    success: function (data) {
-                        //alert(data);
-                        // Trigger download of the updated document
-                        window.location.href = 'download-form.php?file=' + data;
+                            // Close the modal after a short delay (adjust as needed)
+                            setTimeout(function () {
+                                showToast(
+                                    "Download successful",
+                                    "success"
+                                );
+                            }, 3000);
 
-                        // Close the modal after a short delay (adjust as needed)
-                        setTimeout(function () {
                             $('#exampleModal').modal('hide');
-                        }, 300); // Close after 2 seconds
 
-                        // Hide loading icon once download is initiated
-                        $('#loadingIcon').hide();
-                        $('#generateDoc').removeClass('disabled');
-                        $('#closeModal').removeClass('disabled');
+                            // Hide loading icon once download is initiated
+                            $('#loadingIcon').hide();
+                            $('#generateDoc').removeClass('disabled');
+                            $('#closeModal').removeClass('disabled');
 
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                        // Hide loading icon once download is initiated
-                        $('#loadingIcon').hide();
-                        $('#generateDoc').removeClass('disabled');
-                        $('#closeModal').removeClass('disabled');
-                    }
-                });
+                        },
+                        error: function (xhr, status, error) {
+                            showToast(
+                                "Error downloading file",
+                                "error"
+                            );
+                            console.error(xhr.responseText);
+                            // Hide loading icon once download is initiated
+                            $('#loadingIcon').hide();
+                            $('#generateDoc').removeClass('disabled');
+                            $('#closeModal').removeClass('disabled');
+                        }
+                    });
+                }
             }
             // Fetch options from the database and populate the modal form
             $(document).ready(function () {
@@ -276,6 +291,35 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 });
             });
 
+            function showToast(message, type) {
+                // Create toaster element
+                var toaster = document.createElement("div");
+                toaster.className = "toaster " + type;
+                toaster.textContent = message;
+
+                // Set position and size
+                toaster.style.position = "fixed";
+                toaster.style.bottom = "20px";
+                toaster.style.right = "20px";
+                toaster.style.width = "300px";
+                toaster.style.padding = "15px";
+                toaster.style.borderRadius = "10px";
+                toaster.style.zIndex = "9999";
+
+                // Append toaster to the body
+                document.body.appendChild(toaster);
+
+                // Display the toaster
+                toaster.style.display = "block";
+
+                // Fade out and remove the toaster after 3 seconds
+                setTimeout(function () {
+                    toaster.style.opacity = "0";
+                    setTimeout(function () {
+                        document.body.removeChild(toaster);
+                    }, 3000);
+                }, 3000);
+            }
         </script>
     </body>
 
