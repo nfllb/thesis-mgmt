@@ -105,7 +105,19 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
                 if ($_SESSION['role'] == 'Research Coordinator')
                 {
-                    echo "<a href='/thesis-mgmt/php/download-thesis.php?page=thesis&thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a><br>";
+                    $con->next_result();
+                    $getFiles_Select = "CALL getUploadedFileCount($thesis_id);";
+                    $getFiles_Result = mysqli_query($con, $getFiles_Select);
+                    $files = mysqli_fetch_assoc($getFiles_Result);
+                    $fileCount = $files["FileCount"];
+
+                    if ($fileCount > 0)
+                    {
+                        echo "<a href='/thesis-mgmt/php/download-thesis.php?page=thesis&thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a><br>";
+                    } else
+                    {
+                        echo "<a href='/thesis-mgmt/php/download-thesis.php?page=thesis&thesisId=$thesis_id' class='btn btn-primary disabledDownload btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a><br>";
+                    }
                 } else
                 {
                     echo "<div style='margin-top: 35px;'></div>";

@@ -29,7 +29,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
         <?php
         $sql_WhereClause = ' WHERE ';
-        if ($_SESSION['role'] == 'Research Coordinator')
+        if ($_SESSION['role'] == 'Research Coordinator' || $_SESSION['role'] == 'Dean')
         {
             $sql_WhereClause = $sql_WhereClause . '1';
         } else if ($_SESSION['role'] == 'Adviser')
@@ -52,6 +52,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             {
                 $thesis_id = $thesis["ThesisId"];
                 $thesis_title = $thesis["Title"];
+                $thesis_status = $thesis["Status"];
                 $thesis_lastModDate = $thesis["LastModifiedDate"];
                 $formatted_date = date("F j, Y", strtotime($thesis_lastModDate));
                 $thesis_authors = $thesis["Authors"];
@@ -59,22 +60,43 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 echo "<div class='container'>
                     <div id='thesisContainer' class='card w-75 mb-3'>
                         <div class='card-body'>
-                            <a id='thesisName' href='/thesis-mgmt/tasks/task_details.php?thesisId=$thesis_id'><h5 class='card-title black_text_hover_pointer'>$thesis_title</h5></a>
+                            <a id='thesisName' href='/thesis-mgmt/tasks/task_details.php?thesisId=$thesis_id'><h5 class='card-title black_text_hover_pointer'>$thesis_title";
+                if ($thesis_status == 'Completed')
+                {
+                    echo "<span style='margin-left: 15px; background-color: green; font-style: oblique; font-family:Segoe UI; font-size: 20px;' class=badge badge-success'>Completed</span>";
+                }
+                echo "</h5></a>
+                            <hr>
                             <h6 class='thesis-text-color'>Authors: ";
                 foreach ($authors_arr as $author)
                 {
                     echo "<span class='badge text-bg-secondary'>$author</span>";
                 }
-                echo "</h6>
-                            <a href='/thesis-mgmt/php/download-thesis.php?thesisId=$thesis_id' class='btn btn-primary btn-sm'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>
-                            <br><span class='thesis-text-color'>Last Updated Date: $formatted_date </span>
+                echo "</h6>";
+
+                $getFiles_Select = "CALL getUploadedFileCount($thesis_id);";
+                $getFiles_Result = mysqli_query($con, $getFiles_Select);
+                $files = mysqli_fetch_assoc($getFiles_Result);
+                $fileCount = $files["FileCount"];
+
+                if ($fileCount > 0)
+                {
+                    echo "<a href='/thesis-mgmt/php/download-thesis.php?page=tasks&thesisId=$thesis_id' class='btn btn-primary btn-sm' style='margin-bottom:5px;'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>";
+                } else
+                {
+                    echo "<a href='/thesis-mgmt/php/download-thesis.php?page=tasks&thesisId=$thesis_id' class='disabledDownload btn btn-primary btn-sm' style='margin-bottom:5px;'><i style='margin-right:3px;' class='fa-regular fa-circle-down'></i>Download</a>";
+                }
+
+                echo "<br><span class='thesis-text-color'>Last Updated Date: $formatted_date </span>
                         </div>
                     </div>
                     </div>";
+
+                $con->next_result();
             }
         } else
         {
-            echo "<div class='content container'>
+            echo "<div class='container'>
             <div id='thesisContainer' class='card w-100 mb-3'>
                 <div class='card-body'>
                     <div style='font-size:16px;'class='alert alert-danger' role='alert>
@@ -87,9 +109,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         }
         ?>
 
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
             crossorigin="anonymous"></script>

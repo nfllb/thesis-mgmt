@@ -891,7 +891,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         <script>
             function openModal() {
                 // Get panelist value and set it in the modal textarea
-                var panelistValue = '<?php if ($panelists_arr != null)
+                var panelistValue = '<?php if ($panelists_arr != null && $panelists_arr["PanelMembers"] != '')
                 {
                     echo implode("; ", $panelists);
                 } else

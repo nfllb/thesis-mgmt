@@ -21,10 +21,18 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             header("Location: /thesis-mgmt/dashboard/index.php");
         } else
         {
+            // Connect to your database
+            $mysqli = mysqli_connect("localhost", "root", "", "thesis_mgmt");
+
+            // Check connection
+            if ($mysqli->connect_error)
+            {
+                die("Connection failed: " . $mysqli->connect_error);
+            }
+
             $sql_Select = "SELECT * FROM thesis_groupedstudents_vw" . " WHERE Authors LIKE '%" . $_SESSION['name'] . "%'";
-            echo $sql_Select;
-            $result = mysqli_query($con, $sql_Select);
-            if ($result && mysqli_num_rows($result) == 0)
+            $result = $mysqli->query($sql_Select);
+            if ($result->num_rows == 0)
             {
                 header("Location: /thesis-mgmt/create_new_thesis.php");
             } else

@@ -4,14 +4,27 @@
 
 <div class="wrapper">
     <div class="sidebar">
+
+        <!-- Logo -->
+        <div class="sidebar-logo">
+            <a href="/thesis-mgmt/index.php">
+                <img src="/thesis-mgmt/images/Logo.png" alt="Thesis Management"
+                    style="width: 220px; height: auto; border-radius: 8%; border: 2px solid #ccc; padding: 5px; transition: border-color 0.3s ease;">
+            </a>
+        </div>
         <ul class="list-unstyled">
             <!-- New Document -->
-            <div>
-                <a class="newdoc" style="cursor: pointer" onclick="uploadFile()">
-                    <span class="icon"><i class="fa-solid fa-circle-plus"></i></span>
-                    <span class="item">Add new document</span>
-                </a>
-            </div>
+            <?php
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator')
+            { ?>
+                <div>
+                    <a class="newdoc" style="cursor: pointer" onclick="uploadFile()">
+                        <span class="icon"><i class="fa-solid fa-circle-plus"></i></span>
+                        <span class="item">Add new document</span>
+                    </a>
+                </div>
+            <?php }
+            ?>
             <br>
             <br>
             <!-- New Thesis -->
@@ -95,7 +108,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: translateX(-50%);" class="circle">
+    transform: translateX(-50%);
+    margin-left: -50px" class="circle">
     <a href="/thesis-mgmt/user-manual.php">
         <i style="color: #fff; font-size:30px;" class="fa-regular fa-circle-question"></i>
     </a>
