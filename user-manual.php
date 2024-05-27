@@ -7,8 +7,7 @@
     <title>User Manual - Thesis Management System</title>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <style>
         ol,
@@ -44,8 +43,8 @@
 <body class="content">
     <div>
         <h3 style="position:absolute;margin-top:20px;">User Manual</h3>
-        <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
-        <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
+        <?php include($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
+        <?php include($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
         <hr>
     </div>
 
@@ -65,8 +64,6 @@
         <li><strong>Add Documents:</strong> Click on the "Add Document" button to upload files such as forms.</li>
         <li><strong>Dashboard:</strong> Click "Dashboard" to view an overview of the system.</li>
         <li><strong>Thesis:</strong> View all thesis projects by clicking on "Thesis".</li>
-        <li><strong>Itinerary:</strong> Check upcoming events under "Itinerary". Add events by clicking "Add Event", or
-            modify existing events by double-clicking them.</li>
         <li><strong>Users:</strong> View system users by clicking "Users".</li>
         <li><strong>Forms:</strong> Access forms by clicking the "Forms" button.</li>
         <li><strong>Reports:</strong> Generate reports for the system by clicking "Reports".</li>
@@ -80,7 +77,6 @@
     <ol>
         <li><strong>Dashboard:</strong> View system overview by clicking "Dashboard".</li>
         <li><strong>Thesis:</strong> Access thesis projects by clicking "Thesis".</li>
-        <li><strong>Itinerary:</strong> View upcoming events by clicking "Itinerary".</li>
         <li><strong>Forms:</strong> Access forms by clicking the "Forms" button.</li>
         <li><strong>User Manual:</strong> Access the user manual by clicking the question mark icon.</li>
     </ol>
@@ -92,7 +88,6 @@
         <li><strong>Tasks:</strong> Manage submissions, approvals, and revisions of thesis papers by clicking "Tasks".
         </li>
         <li><strong>Thesis:</strong> Access thesis projects by clicking "Thesis".</li>
-        <li><strong>Itinerary:</strong> View upcoming events by clicking "Itinerary".</li>
         <li><strong>Forms:</strong> Access forms by clicking the "Forms" button.</li>
         <li><strong>User Manual:</strong> Access the user manual by clicking the question mark icon.</li>
     </ol>
@@ -103,7 +98,6 @@
         <li><strong>Dashboard:</strong> View system overview by clicking "Dashboard".</li>
         <li><strong>Tasks:</strong> Check submissions of papers under your advisory by clicking "Tasks".</li>
         <li><strong>Thesis:</strong> Access thesis projects by clicking "Thesis".</li>
-        <li><strong>Itinerary:</strong> View upcoming events by clicking "Itinerary".</li>
         <li><strong>Forms:</strong> Access forms by clicking the "Forms" button.</li>
         <li><strong>User Manual:</strong> Access the user manual by clicking the question mark icon.</li>
     </ol>
@@ -114,7 +108,6 @@
         <li><strong>Dashboard:</strong> View system overview by clicking "Dashboard".</li>
         <li><strong>Tasks:</strong> Check your own thesis project and submissions by clicking "Tasks".</li>
         <li><strong>Thesis:</strong> Access thesis projects by clicking "Thesis".</li>
-        <li><strong>Itinerary:</strong> View upcoming events by clicking "Itinerary".</li>
         <li><strong>Forms:</strong> Access forms by clicking the "Forms" button. Generate forms if needed.</li>
         <li><strong>User Manual:</strong> Access the user manual by clicking the question mark icon.</li>
     </ol>

@@ -47,7 +47,7 @@ body {
 }
 
 .login-form {
-	width: 350px;
+	width: 450px;
 }
 
 .new-thesis-form {
@@ -83,6 +83,11 @@ h6.thesis-text-color .badge {
 }
 
 #thesisContainer {
+	border-radius: 15px !important;
+	background-color: #f4ede8;
+}
+
+.thesisContainer {
 	border-radius: 15px !important;
 	background-color: #f4ede8;
 }
@@ -338,7 +343,7 @@ body.active .wrapper .section {
 }
 
 .progress-container {
-	width: 300px;
+	width: 250px;
 }
 
 .progress-circle {
@@ -456,4 +461,20 @@ body.active .wrapper .section {
 	pointer-events: none;
 	opacity: 0.5;
 	cursor: not-allowed;
+}
+
+.info-message {
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	padding: 10px;
+	color: #005662;
+	font-size: 1.3em;
+	width: 75%;
+	margin-bottom: 10px;
+	font-weight: 700;
+}
+.info-message i {
+	margin-right: 10px;
+	font-size: 1.5em;
 }

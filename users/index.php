@@ -1,9 +1,8 @@
 <?php
 session_start();
-include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
-if (isset($_SESSION['username']) && isset($_SESSION['userid']))
-{
-    ?>
+include($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
+if (isset($_SESSION['username']) && isset($_SESSION['userid'])) {
+?>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -67,7 +66,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             }
 
             .container {
-                width: 80%;
+                width: 100%;
                 margin: 20px auto;
                 position: relative;
             }
@@ -135,8 +134,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
     <body class="content">
         <header>
             <h3 style="position:absolute;margin-top:20px;">User Management</h3>
-            <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
-            <?php include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
+            <?php include($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/header.php"); ?>
+            <?php include($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/sidebar.php"); ?>
             <hr>
         </header>
 
@@ -183,20 +182,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
         </div>
 
         <?php
-        if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator')
-        { ?>
+        if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator') { ?>
             <div class="container">
                 <div class="btn-container">
                     <div class="filter-container">
                         <input type="text" id="filterInput" placeholder="Search user...">
                     </div>
-                    <button class="add-user-btn btn btn-sm btn-primary"
-                        onclick="window.location.href = '/thesis-mgmt/signup.php';">Add User</button>
+                    <button class="add-user-btn btn btn-sm btn-primary" onclick="window.location.href = '/thesis-mgmt/signup.php';">Add User</button>
                 </div>
                 <?php
                 // If form is submitted, update user data in database
-                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save']))
-                {
+                if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save'])) {
                     $user_id = $_POST['user_id'];
                     $username = $_POST['username'];
                     $email = $_POST['email'];
@@ -206,30 +202,32 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
                     $sql = "UPDATE users SET `Name`='$name', `UserName`='$username', `Email`='$email', `Role`='$role', `Status`='$status' WHERE UserId = $user_id";
 
-                    if ($con->query($sql) === FALSE)
-                    {
+                    if ($con->query($sql) === FALSE) {
                         echo "Error updating record: " . $con->error;
                     }
                 }
 
                 // Fetch users from database
-                $sql = "SELECT * FROM users";
+                $sql = "SELECT * FROM users_vw";
                 $result = $con->query($sql);
 
-                if ($result->num_rows > 0)
-                {
+                if ($result->num_rows > 0) {
                     echo "<div class='table-container'>";
                     echo "<table>";
-                    echo "<tr><th style='display: none;'>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Edit</th></tr>";
+                    echo "<tr><th style='display: none;'>User ID</th><th>Name</th><th>Username</th><th>Email</th><th>Role</th><th>School Year</th><th>Last Login Date</th><th>Status</th><th>Edit</th></tr>";
 
-                    while ($row = $result->fetch_assoc())
-                    {
+                    while ($row = $result->fetch_assoc()) {
+                        $datetime = new DateTime($row["LastLoginDate"]);
+                        $formatted_datetime = $datetime->format('m-d-Y H:i:s');
+
                         echo "<tr>";
                         echo "<td style='display: none;'>" . $row["UserId"] . "</td>";
                         echo "<td>" . $row["Name"] . "</td>";
                         echo "<td>" . $row["UserName"] . "</td>";
                         echo "<td>" . $row["Email"] . "</td>";
                         echo "<td>" . $row["Role"] . "</td>";
+                        echo "<td>" . $row["SchoolYear"] . "</td>";
+                        echo "<td>" . $formatted_datetime . "</td>";
                         echo "<td>" . $row["Status"] . "</td>";
                         echo "<td>";
                         echo "<button class='edit-btn btn btn-sm btn-primary' type='button' data-bs-toggle='modal' data-bs-target='#editUserModal' data-status='" . $row["Status"] . "' data-role='" . $row["Role"] . "' data-name='" . $row["Name"] . "' data-user-id='" . $row["UserId"] . "' data-username='" . $row["UserName"] . "' data-email='" . $row["Email"] . "'>Edit</button>";
@@ -238,17 +236,15 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                     }
                     echo "</table>";
                     echo "</div>";
-                } else
-                {
+                } else {
                     echo "0 results";
                 }
 
                 $con->close();
                 ?>
             </div>
-            <?php
-        } else
-        {
+        <?php
+        } else {
             echo "<div class='container'>
         <div id='thesisContainer' class='card w-100 mb-3'>
             <div class='card-body'>
@@ -280,7 +276,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
             // Event listener for Edit button click
             document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     const userId = this.getAttribute('data-user-id');
                     const name = this.getAttribute('data-name');
                     const username = this.getAttribute('data-username');
@@ -292,15 +288,19 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
             });
 
             // Filter table as you type
-            document.getElementById("filterInput").addEventListener("keyup", function () {
+            document.getElementById("filterInput").addEventListener("keyup", function() {
                 var filterValue = this.value.toUpperCase();
                 var table = document.querySelector("table");
                 var rows = table.getElementsByTagName("tr");
                 for (var i = 1; i < rows.length; i++) {
                     var cells = rows[i].getElementsByTagName("td")[1];
-                    if (cells) {
+                    var year = rows[i].getElementsByTagName("td")[5];
+                    if (cells || year) {
                         var username = cells.textContent || cells.innerText;
+                        var schoolYear = year.textContent || year.innerText;
                         if (username.toUpperCase().indexOf(filterValue) > -1) {
+                            rows[i].style.display = "";
+                        } else if (schoolYear.toUpperCase().indexOf(filterValue) > -1) {
                             rows[i].style.display = "";
                         } else {
                             rows[i].style.display = "none";
@@ -314,7 +314,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
 
     </html>
 
-<?php } else
-{
+<?php } else {
     header("Location: /thesis-mgmt/login.php");
 } ?>

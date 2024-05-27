@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 function validate($data)
 {
@@ -11,7 +11,9 @@ function validate($data)
 }
 
 $role = validate($_POST['role']);
-$name = validate($_POST['name']);
+$firstname = validate($_POST['firstname']);
+$middlename = validate($_POST['middlename']);
+$lastname = validate($_POST['lastname']);
 $username = validate($_POST['username']);
 $email = validate($_POST['email']);
 $password = validate($_POST['password']);
@@ -20,75 +22,56 @@ $securityanswer = validate($_POST['securityanswer']);
 $department = '';
 $year = '';
 $course = '';
+$idnumber = '';
 
-if (isset($_POST['department']))
-{
+
+if (isset($_POST['department'])) {
   $department = validate($_POST['department']);
 }
-if (isset($_POST['year']))
-{
+if (isset($_POST['year'])) {
   $year = validate($_POST['year']);
 }
-if (isset($_POST['course']))
-{
+if (isset($_POST['course'])) {
   $course = validate($_POST['course']);
 }
+if (isset($_POST['idnumber'])) {
+  $idnumber = validate($_POST['idnumber']);
+}
 
-if (empty($role))
-{
-  header("Location: /thesis-mgmt/signup.php?error=Academic Role is required.");
-  exit();
-} else if (empty($name))
-{
-  header("Location: /thesis-mgmt/signup.php?error=Name is required.");
-  exit();
-} else if (empty($username))
-{
-  header("Location: /thesis-mgmt/signup.php?error=User Name is required.");
-  exit();
-} else if (empty($email))
-{
-  header("Location: /thesis-mgmt/signup.php?error=An email address is necessary.");
-  exit();
-} else if (empty($password))
-{
-  header("Location: /thesis-mgmt/signup.php?error=Password is required.");
-  exit();
-} else
-{
-  // hashing the password
-  $password = md5($password);
+// hashing the password
+$password = md5($password);
 
-  $sql = "SELECT UserId FROM users WHERE UserName='$username' ";
-  $result = mysqli_query($con, $sql);
+$select_existing_user = "SELECT UserId FROM users WHERE UserName='$username' ";
+$result_select_existing_user = mysqli_query($con, $select_existing_user);
 
-  if (mysqli_num_rows($result) > 0)
-  {
-    header("Location: /thesis-mgmt/signup.php?error=The username is already in use. Please try another.");
+$select_idnumber_inuse = "SELECT IDNumber FROM student WHERE IDNumber='$idnumber' ";
+$result_select_idnumber_inuse = mysqli_query($con, $select_idnumber_inuse);
+
+if (mysqli_num_rows($result_select_existing_user) > 0) {
+  header("Location: /thesis-mgmt/signup.php?error=The User Name is already in use. Please try a different one.");
+  exit();
+} else if (mysqli_num_rows($result_select_idnumber_inuse) > 0) {
+  header("Location: /thesis-mgmt/signup.php?error=The ID Number is already in use. Please try a different one.");
+  exit();
+} else {
+  // Prepare the stored procedure call
+  $stmt = $con->prepare("CALL CreateNewUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+  $stmt->bind_param("sssssssssssss", $role, $firstname, $middlename, $lastname, $username, $password, $email, $securityquestion, $securityanswer, $course, $department, $year, $idnumber);
+
+  // Execute the stored procedure
+  $stmt->execute();
+
+  // Check for errors
+  if ($stmt->error) {
+    header("Location: /thesis-mgmt/signup.php?error=User creation encountered an error. Please reach out to your system administrator and provide the error message.");
     exit();
-  } else
-  {
-    // Prepare the stored procedure call
-    $stmt = $con->prepare("CALL CreateNewUser(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-    $stmt->bind_param("ssssssssss", $role, $name, $username, $password, $email, $securityquestion, $securityanswer, $course, $department, $year);
-
-    // Execute the stored procedure
-    $stmt->execute();
-
-    // Check for errors
-    if ($stmt->error)
-    {
-      header("Location: /thesis-mgmt/signup.php?error=User creation encountered an error. Please reach out to your system administrator and provide the error message.");
-      exit();
-    } else
-    {
-      session_unset();
-      session_destroy();
-      header("Location: /thesis-mgmt/login.php");
-    }
-
-    // Close statement
-    $stmt->close();
+  } else {
+    session_unset();
+    session_destroy();
+    header("Location: /thesis-mgmt/login.php");
   }
+
+  // Close statement
+  $stmt->close();
 }

@@ -110,7 +110,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                         <div class="modal-header">
                             <h5 class="modal-title" id="editModalLabel">Edit Panelists</h5>
                             <span style="margin-left: 5px;" class="text-muted ml-2">Use ";" as separator</span>
-                            <button type="button" class="btn-close" data-bs-dismis="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <textarea class="form-control" id="panelistTextarea"></textarea>
@@ -160,6 +160,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                     $step_status = $step["Status"];
                                     $step_assignee = $step["Assignee"];
                                     $checklistId = $step["CheckListId"];
+                                    $step_CompletionDate = $step["CompletedDate"];
+                                    $step_shortDesc_arr = explode("*", $step["FormShortDesc"]);
+                                    $step_shortDesc_newline = implode("</br>", $step_shortDesc_arr);
 
 
                                     $bkgrnd_color = '';
@@ -206,18 +209,26 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                         $step_assigneed_to_user = true;
                                     }
 
+                                    if($step["Action"] == 'Approval' && $step_status == 'In Progress') {
+                                        $query_PendingApproval = "SELECT u.Name, u.Role FROM `thesis_checklist_approval_map` t LEFT JOIN `users` u ON t.ApproverId = u.UserId WHERE ThesisId = $thesisId AND CheckListId = $checklistId AND Approved = 0";
+                                        $pendingApprovals = $con->query($query_PendingApproval);
+                                    }
+
                                     echo "<tr style='font-size:.875rem;' class='" . $bkgrnd_color . "'>";
                                     echo "<td class='p-3' scope='row'><center>$step_number</center></td>
-                                        <td class='w-25 p-3'>$step_name</td>
+                                        <td class='w-25 p-3'>$step_name
+                                        <span style='font-size: 11px; color:black;'>$step_shortDesc_newline </span></td>
                                         <td class='w-25 p-3'>$step_assignee</td>";
                                     /* Status Column */
                                     if ($step_status == 'Completed')
                                     {
+                                        $formatted_date = date("F j, Y", strtotime($step_CompletionDate));
                                         echo "<td style='width: 10%;'>
                                             <center>
                                                 <h5>
                                                     <span class='task_status_completed badge badge-success'>Completed</span>
                                                 </h5>
+                                                <span style='font-weight: 700; font-size: 11px; color:green;'>On: $formatted_date </span>
                                             </center>
                                         </td>";
                                     } else if ($step["Action"] == 'Manual' && $step_status != 'Completed' && $show_status)
@@ -260,8 +271,14 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                             <center>
                                                 <h5>
                                                     <span class='task_status_inprogress badge badge-success'>$step_status</span>
-                                                </h5>
-                                            </center>
+                                                </h5>";
+                                                if($pendingApprovals->num_rows > 0) {
+                                                    foreach($pendingApprovals as $pending) {
+                                                        echo "<span style='font-weight: 700; font-size: 11px; color:red;'>Pending Approval: " . $pending['Name'] . " (" . $pending['Role'] .")</span>";
+                                                    }
+                                                }
+                                                
+                                           echo "</center>
                                         </td>";
                                     } else
                                     {
@@ -303,11 +320,18 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                                 <center class='vertical-center'>
                                                     <input type='file' id='file' />
                                                     <br />
-                                                    <button type='button' value=" . $checklistId . " class='btn btn-success' id='upload'>Upload</button>
+                                                    <button type='button' value=" . $checklistId . " class='btn btn-sm btn-success' id='upload'>Upload</button>
                                                     <div id='msg'></div>
                                                 </center>
                                             </form>
                                         </td>";
+                                    } else if($step["Action"] == 'Upload' && $step_status == 'Completed' && str_contains($assignee, $_SESSION['role'])) {
+                                        echo "<td>
+                                                <center>
+                                                    <button type='button' data-filename=" . $step["UploadedFileName"] . " value=" . $checklistId . " class='btn btn-danger btn-sm' id='deleteBtn'>Delete File</button>
+                                                </center>
+                                                <span id='deleteErrMsg'></span>
+                                            </td>";
                                     } else
                                     {
                                         echo "<td></td>";
@@ -370,6 +394,9 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                     $step_status = $step["Status"];
                                     $step_assignee = $step["Assignee"];
                                     $checklistId = $step["CheckListId"];
+                                    $step_CompletionDate = $step["CompletedDate"];
+                                    $step_shortDesc_arr = explode('*', $step["FormShortDesc"]);
+                                    $step_shortDesc_newline = implode("</br>", $step_shortDesc_arr);
 
                                     $bkgrnd_color = '';
                                     $disabled = '';
@@ -415,18 +442,26 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                         $step_assigneed_to_user = true;
                                     }
 
+                                    if($step["Action"] == 'Approval' && $step_status == 'In Progress') {
+                                        $query_PendingApproval = "SELECT u.Name, u.Role FROM `thesis_checklist_approval_map` t LEFT JOIN `users` u ON t.ApproverId = u.UserId WHERE ThesisId = $thesisId AND CheckListId = $checklistId AND Approved = 0";
+                                        $pendingApprovals = $con->query($query_PendingApproval);
+                                    }
+
                                     echo "<tr style='font-size:.875rem;' class='" . $bkgrnd_color . "'>";
                                     echo "<td class='p-3' scope='row'><center>$step_number</center></td>
-                                        <td class='w-25 p-3'>$step_name</td>
+                                        <td class='w-25 p-3'>$step_name
+                                        <span style='font-size:11px;color:black;'>$step_shortDesc_newline </span></td>
                                         <td class='w-25 p-3'>$step_assignee</td>";
                                     /* Status Column */
                                     if ($step_status == 'Completed')
                                     {
+                                        $formatted_date = date("F j, Y", strtotime($step_CompletionDate));
                                         echo "<td style='width: 10%;'>
                                             <center>
                                                 <h5>
                                                     <span class='task_status_completed badge badge-success'>Completed</span>
                                                 </h5>
+                                                <span style='font-weight: 700; font-size: 11px; color:green;'>On: $formatted_date </span>
                                             </center>
                                         </td>";
                                     } else if ($step["Action"] == 'Manual' && $step_status != 'Completed' && $show_status)
@@ -469,8 +504,14 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                             <center>
                                                 <h5>
                                                     <span class='task_status_inprogress badge badge-success'>$step_status</span>
-                                                </h5>
-                                            </center>
+                                                </h5>";
+                                                if($pendingApprovals->num_rows > 0) {
+                                                    foreach($pendingApprovals as $pending) {
+                                                        echo "<span style='font-weight: 700; font-size: 11px; color:red;'>Pending Approval: " . $pending['Name'] . " (" . $pending['Role'] .")</span>";
+                                                    }
+                                                }
+                                                
+                                           echo "</center>
                                         </td>";
                                     } else
                                     {
@@ -512,11 +553,18 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                                                 <center class='vertical-center'>
                                                     <input type='file' id='file2' />
                                                     <br />
-                                                    <button type='button' value=" . $checklistId . " class='btn btn-success' id='upload2'>Upload</button>
+                                                    <button type='button' value=" . $checklistId . " class='btn btn-sm btn-success' id='upload2'>Upload</button>
                                                     <div id='msg2'></div>
                                                 </center>
                                             </form>
                                         </td>";
+                                    } else if($step["Action"] == 'Upload' && $step_status == 'Completed' && str_contains($assignee, $_SESSION['role'])) {
+                                        echo "<td>
+                                                <center>
+                                                    <button type='button' data-filename=" . $step["UploadedFileName"] . " value=" . $checklistId . " class='btn btn-danger btn-sm' id='deleteBtn2'>Delete File</button>
+                                                </center>
+                                                <span id='deleteErrMsg2'></span>
+                                            </td>";
                                     } else if ($show_action && $step["Action"] == 'Select')
                                     {
                                         $query_Editors = "SELECT * FROM editor";
@@ -888,6 +936,80 @@ if (isset($_SESSION['username']) && isset($_SESSION['userid']))
                 });
             });
         </script>
+        <script>
+            $(document).on('click', '#deleteBtn', function (e) {
+                e.preventDefault();
+                var checklist_id = $(this).val();
+
+                $(this).attr('disabled', 'disabled');
+                const step_file_name = this.getAttribute("data-filename");
+                alert(step_file_name);
+
+                var formData = new FormData();
+                formData.append('thesis_Id', <?php echo $thesisId; ?>);
+                formData.append('delete_file', true);
+                formData.append('checklist_id', checklist_id);
+                formData.append('action', 'DeleteFile');
+                formData.append('new_step_status', 'Not Started');
+                formData.append('step_file_name', step_file_name);
+
+                $.ajax({
+                    type: "POST",
+                    url: "save_task.php",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data == "The file was deleted successfully.") {
+                            window.location.reload();
+                        } else {
+                            $("<center class='text-danger'>" + data + "</center>").appendTo($("#deleteErrMsg"));
+                        }
+
+                        $('#deleteBtn').removeAttr('disabled');
+
+                    }
+                });
+            });
+
+            $(document).on('click', '#deleteBtn2', function (e) {
+                e.preventDefault();
+                var checklist_id = $(this).val();
+
+                $(this).attr('disabled', 'disabled');
+                const step_file_name = this.getAttribute("data-filename");
+                alert(step_file_name);
+
+                var formData = new FormData();
+                formData.append('thesis_Id', <?php echo $thesisId; ?>);
+                formData.append('delete_file', true);
+                formData.append('checklist_id', checklist_id);
+                formData.append('action', 'DeleteFile');
+                formData.append('new_step_status', 'Not Started');
+                formData.append('step_file_name', step_file_name);
+
+                $.ajax({
+                    type: "POST",
+                    url: "save_task.php",
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data == "The file was deleted successfully.") {
+                            window.location.reload();
+                        } else {
+                            $("<center class='text-danger'>" + data + "</center>").appendTo($("#deleteErrMsg2"));
+                        }
+
+                        $('#deleteBtn2').removeAttr('disabled');
+
+                    }
+                });
+            });
+        </script>
+
         <script>
             function openModal() {
                 // Get panelist value and set it in the modal textarea

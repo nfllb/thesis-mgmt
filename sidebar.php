@@ -8,15 +8,13 @@
         <!-- Logo -->
         <div class="sidebar-logo">
             <a href="/thesis-mgmt/index.php">
-                <img src="/thesis-mgmt/images/Logo.png" alt="Thesis Management"
-                    style="width: 220px; height: auto; border-radius: 8%; border: 2px solid #ccc; padding: 5px; transition: border-color 0.3s ease;">
+                <img src="/thesis-mgmt/images/Logo.png" alt="Thesis Management" style="width: 220px; height: auto; border-radius: 8%; border: 2px solid #ccc; padding: 5px; transition: border-color 0.3s ease;">
             </a>
         </div>
         <ul class="list-unstyled">
             <!-- New Document -->
             <?php
-            if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator')
-            { ?>
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator') { ?>
                 <div>
                     <a class="newdoc" style="cursor: pointer" onclick="uploadFile()">
                         <span class="icon"><i class="fa-solid fa-circle-plus"></i></span>
@@ -28,12 +26,20 @@
             <br>
             <br>
             <!-- New Thesis -->
-            <li>
-                <a href="/thesis-mgmt/create_new_thesis.php">
-                    <span class="icon"><i class="fas fa-book"></i></span>
-                    <span class="item">Create New Thesis</span>
-                </a>
-            </li>
+            <?php
+            $select_existing_thesis = "SELECT Authors FROM thesis_groupedstudents_vw WHERE Authors LIKE '%" . $_SESSION['name'] . "%'";
+            $result_select_existing_thesis = $con->query($select_existing_thesis);
+            $rowCount = ($result_select_existing_thesis->num_rows);
+
+            if ((isset($_SESSION['role']) && $_SESSION['role'] != 'Student') || $rowCount == 0) { ?>
+                <li>
+                    <a href="/thesis-mgmt/create_new_thesis.php">
+                        <span class="icon"><i class="fas fa-book"></i></span>
+                        <span class="item">Create New Thesis</span>
+                    </a>
+                </li>
+            <?php }
+            ?>
             <!-- Dashboard -->
             <li>
                 <a href="/thesis-mgmt/dashboard/index.php">
@@ -45,13 +51,12 @@
             <li>
                 <a href="/thesis-mgmt/thesis/index.php">
                     <span class="icon"><i class="fas fa-user-friends"></i></span>
-                    <span class="item">Thesis</span>
+                    <span class="item">Progress Chart</span>
                 </a>
             </li>
             <!-- Users -->
             <?php
-            if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator')
-            { ?>
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator') { ?>
                 <li>
                     <a href="/thesis-mgmt/users/index.php">
                         <span class="icon"><i class="fa-solid fa-users"></i></span>
@@ -62,8 +67,7 @@
             ?>
             <!-- Forms -->
             <?php
-            if (isset($_SESSION['role']) && $_SESSION['role'] != 'Dean')
-            { ?>
+            if (isset($_SESSION['role']) && $_SESSION['role'] != 'Dean') { ?>
                 <li>
                     <a href="/thesis-mgmt/forms/index.php">
                         <span class="icon"><i class="fas fa-chart-line"></i></span>
@@ -74,8 +78,7 @@
             ?>
             <!-- Reports -->
             <?php
-            if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator')
-            { ?>
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'Research Coordinator') { ?>
                 <li>
                     <a href="/thesis-mgmt/reports/index.php">
                         <span class="icon"><i class="fas fa-user-shield"></i></span>
@@ -109,7 +112,7 @@
     justify-content: center;
     align-items: center;
     transform: translateX(-50%);
-    margin-left: -50px" class="circle">
+    margin-left: -10px" class="circle">
     <a href="/thesis-mgmt/user-manual.php">
         <i style="color: #fff; font-size:30px;" class="fa-regular fa-circle-question"></i>
     </a>

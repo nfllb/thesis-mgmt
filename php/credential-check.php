@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/thesis-mgmt/dbconnect.php");
 
 function test_input($data)
 {
@@ -13,14 +13,11 @@ function test_input($data)
 $username = test_input($_POST['username']);
 $password = test_input($_POST['password']);
 
-if (empty($username))
-{
+if (empty($username)) {
     header("Location: /thesis-mgmt/login.php?error=Username is required");
-} else if (empty($password))
-{
+} else if (empty($password)) {
     header("Location: /thesis-mgmt/login.php?error=Password is required");
-} else
-{
+} else {
 
     // Hashing the password
     $password = md5($password);
@@ -28,32 +25,30 @@ if (empty($username))
     $sql = "SELECT * FROM users WHERE UserName='$username' AND Password='$password'";
     $result = mysqli_query($con, $sql);
 
-    if (mysqli_num_rows($result) === 1)
-    {
+    if (mysqli_num_rows($result) === 1) {
         // the user name must be unique
         $row = mysqli_fetch_assoc($result);
 
-        if ($row['Status'] == 'Active')
-        {
-            if ($row['Password'] === $password && $row['UserName'] == $username)
-            {
+        if ($row['Status'] == 'Active') {
+            if ($row['Password'] === $password && $row['UserName'] == $username) {
+                $update_lastlogindate = "UPDATE users SET `LastLoginDate`= current_timestamp() WHERE UserId = " . $row['UserId'];
+
+                if ($con->query($update_lastlogindate) === FALSE) {
+                    echo "Error updating record: " . $con->error;
+                }
+
                 $_SESSION['name'] = $row['Name'];
                 $_SESSION['userid'] = $row['UserId'];
                 $_SESSION['role'] = $row['Role'];
                 $_SESSION['username'] = $row['UserName'];
                 header("Location: /thesis-mgmt/index.php");
-
-            } else
-            {
+            } else {
                 header("Location: /thesis-mgmt/login.php?error=Incorrect username or password.");
             }
-        } else
-        {
+        } else {
             header("Location: /thesis-mgmt/login.php?error=The user is currently inactive. Please reach out to your Research Coordinator for assistance.");
         }
-
-    } else
-    {
+    } else {
         header("Location: /thesis-mgmt/login.php?error=Incorrect username or password.");
     }
 }
