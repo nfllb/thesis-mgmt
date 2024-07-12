@@ -77,7 +77,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateNewThesis` (IN `title` VARCHA
 
     /* Insert into thesis_checklist_map table */
     INSERT INTO `thesis_checklist_map`
-    SELECT NULL, last_thesis_id, CheckListId, 0, 'Not Started' FROM checklist;
+    SELECT NULL, last_thesis_id, CheckListId, 0, 'Not Started', NULL, NULL FROM checklist;
 
     /* Create a temporary table to store the individual values */
     DROP TEMPORARY TABLE IF EXISTS temp_approvers;
