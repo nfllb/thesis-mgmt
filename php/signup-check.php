@@ -50,7 +50,7 @@ $result_select_idnumber_inuse = mysqli_query($con, $select_idnumber_inuse);
 if (mysqli_num_rows($result_select_existing_user) > 0) {
   header("Location: /thesis-mgmt/signup.php?error=The User Name is already in use. Please try a different one.");
   exit();
-} else if (mysqli_num_rows($result_select_idnumber_inuse) > 0) {
+} else if ($role == 'Student' && mysqli_num_rows($result_select_idnumber_inuse) > 0) {
   header("Location: /thesis-mgmt/signup.php?error=The ID Number is already in use. Please try a different one.");
   exit();
 } else {
